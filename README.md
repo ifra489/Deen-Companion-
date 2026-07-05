@@ -14,8 +14,8 @@ Deen Companion is a modern Android application designed to help Muslims with the
 - 💰 Zakat Calculator
 - ⚙️ Settings
 - 🌙 Material Design 3 UI
-
-
+- Quran Audio
+- Prayer Notifications
 ## 🛠 Tech Stack
 
 - Kotlin
@@ -70,8 +70,7 @@ This project follows **MVVM + Clean Architecture**.
 
 ## 📋 Future Improvements
 
-- Quran Audio
-- Prayer Notifications
+
 - Islamic Calendar
 - Bookmark & Favorites
 - Offline Mode
