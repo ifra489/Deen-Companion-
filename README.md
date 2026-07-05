@@ -1,4 +1,4 @@
-# 🕌 Deen Companion
+#  Deen Companion
 
 Deen Companion is a modern Android application designed to help Muslims with their daily religious activities. It provides an elegant and user-friendly interface built with modern Android development technologies.
 
@@ -81,10 +81,6 @@ This project follows **MVVM + Clean Architecture**.
 
 Contributions are welcome. Feel free to fork the repository and submit a pull request.
 
-## 📄 License
 
-This project is licensed under the MIT License.
 
----
 
-⭐ If you like this project, don't forget to give it a star on GitHub!
