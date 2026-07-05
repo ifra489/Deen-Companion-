@@ -8,3 +8,4 @@ google-services.json
 /captures
 *.keystore
 !debug.keystore
+*.hprof
