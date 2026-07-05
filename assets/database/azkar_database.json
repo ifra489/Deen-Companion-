@@ -1,0 +1,164 @@
+{
+  "azkars": [
+    {
+      "id": 1,
+      "type": "morning",
+      "arabic": "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
+      "english": "We have entered the morning and the whole kingdom belongs to Allah, and all praise is due to Allah.",
+      "urdu": "ہم نے صبح کی اور بادشاہت اللہ ہی کی ہے، اور تمام تعریفیں اللہ ہی کے لیے ہیں۔",
+      "romanUrdu": "Hum ne subah ki aur badshahat Allah hi ki hai, aur tamam tareefein Allah hi ke liye hain.",
+      "reference": "Sahih Muslim 2723",
+      "repeatCount": 1
+    },
+    {
+      "id": 2,
+      "type": "morning",
+      "arabic": "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+      "english": "O Allah, by You we enter the morning, by You we enter the evening, by You we live, by You we die, and to You is the resurrection.",
+      "urdu": "اے اللہ! تیرے ہی ذریعے ہم نے صبح کی اور تیرے ہی ذریعے شام کی، تیرے ہی ذریعے ہم زندہ رہتے ہیں اور تیرے ہی ذریعے مرتے ہیں اور تیری ہی طرف اٹھنا ہے۔",
+      "romanUrdu": "Aye Allah! Tere hi zariye hum ne subah ki aur tere hi zariye shaam ki, tere hi zariye hum zinda rehte hain aur tere hi zariye marte hain aur teri hi taraf uthna hai.",
+      "reference": "Sunan al-Tirmidhi 3391",
+      "repeatCount": 1
+    },
+    {
+      "id": 3,
+      "type": "morning",
+      "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+      "english": "Ayat-ul-Kursi: Allah! There is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep.",
+      "urdu": "اللہ کے سوا کوئی معبود نہیں، وہ زندہ ہے، ہر چیز کو قائم رکھنے والا ہے، نہ اسے اونگھ آتی ہے نہ نیند۔",
+      "romanUrdu": "Allah ke siwa koi mabood nahi, woh zinda hai, har cheez ko qaim rakhne wala hai, na use oongh aati hai na neend.",
+      "reference": "Surah Al-Baqarah 2:255",
+      "repeatCount": 1
+    },
+    {
+      "id": 4,
+      "type": "morning",
+      "arabic": "قُلْ هُوَ اللَّهُ أَحَدٌ، اللَّهُ الصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ",
+      "english": "Surah Al-Ikhlas: Say, He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent.",
+      "urdu": "کہہ دو وہ اللہ ایک ہے، اللہ بے نیاز ہے، نہ اس نے جنا نہ وہ جنا گیا، اور نہ کوئی اس کا ہمسر ہے۔",
+      "romanUrdu": "Keh do woh Allah aik hai, Allah be-niyaz hai, na usne jana na woh jana gaya, aur na koi uska hamsar hai.",
+      "reference": "Surah Al-Ikhlas 112",
+      "repeatCount": 3
+    },
+    {
+      "id": 5,
+      "type": "morning",
+      "arabic": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+      "english": "Surah Al-Falaq: Say, I seek refuge in the Lord of daybreak.",
+      "urdu": "کہہ دو میں صبح کے رب کی پناہ مانگتا ہوں۔",
+      "romanUrdu": "Keh do mein subah ke Rab ki panah maangta hun.",
+      "reference": "Surah Al-Falaq 113",
+      "repeatCount": 3
+    },
+    {
+      "id": 6,
+      "type": "morning",
+      "arabic": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+      "english": "Surah An-Nas: Say, I seek refuge in the Lord of mankind.",
+      "urdu": "کہہ دو میں لوگوں کے رب کی پناہ مانگتا ہوں۔",
+      "romanUrdu": "Keh do mein logon ke Rab ki panah maangta hun.",
+      "reference": "Surah An-Nas 114",
+      "repeatCount": 3
+    },
+    {
+      "id": 7,
+      "type": "morning",
+      "arabic": "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ",
+      "english": "Sayyidul Istighfar: O Allah, I have entered the morning calling You to witness, and the bearers of Your Throne to witness.",
+      "urdu": "اے اللہ! میں نے صبح کی اس حال میں کہ میں تجھے اور تیرے عرش کے اٹھانے والوں کو گواہ بناتا ہوں۔",
+      "romanUrdu": "Aye Allah! Maine subah ki is haal mein ke mein tujhe aur tere arsh ke uthane walon ko gawah banata hun.",
+      "reference": "Sahih al-Bukhari 6306",
+      "repeatCount": 1
+    },
+    {
+      "id": 8,
+      "type": "morning",
+      "arabic": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي",
+      "english": "O Allah, grant my body health. O Allah, grant my hearing health. O Allah, grant my sight health.",
+      "urdu": "اے اللہ! میرے بدن کو صحت دے، اے اللہ! میرے کانوں کو صحت دے، اے اللہ! میری آنکھوں کو صحت دے۔",
+      "romanUrdu": "Aye Allah! Mere badan ko sehat de, aye Allah! Mere kaanon ko sehat de, aye Allah! Meri aankhon ko sehat de.",
+      "reference": "Sunan Abi Dawud 5090",
+      "repeatCount": 3
+    },
+    {
+      "id": 9,
+      "type": "evening",
+      "arabic": "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ",
+      "english": "We have entered the evening and the whole kingdom belongs to Allah, and all praise is due to Allah.",
+      "urdu": "ہم نے شام کی اور بادشاہت اللہ ہی کی ہے، اور تمام تعریفیں اللہ ہی کے لیے ہیں۔",
+      "romanUrdu": "Hum ne shaam ki aur badshahat Allah hi ki hai, aur tamam tareefein Allah hi ke liye hain.",
+      "reference": "Sahih Muslim 2723",
+      "repeatCount": 1
+    },
+    {
+      "id": 10,
+      "type": "evening",
+      "arabic": "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
+      "english": "O Allah, by You we enter the evening, by You we enter the morning, by You we live, by You we die, and to You is the return.",
+      "urdu": "اے اللہ! تیرے ہی ذریعے ہم نے شام کی اور تیرے ہی ذریعے صبح کی، تیرے ہی ذریعے ہم زندہ رہتے ہیں اور مرتے ہیں اور تیری ہی طرف لوٹنا ہے۔",
+      "romanUrdu": "Aye Allah! Tere hi zariye hum ne shaam ki aur tere hi zariye subah ki, tere hi zariye hum zinda rehte hain aur marte hain aur teri hi taraf lautna hai.",
+      "reference": "Sunan al-Tirmidhi 3391",
+      "repeatCount": 1
+    },
+    {
+      "id": 11,
+      "type": "evening",
+      "arabic": "اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ",
+      "english": "Ayat-ul-Kursi: Allah! There is no deity except Him, the Ever-Living, the Sustainer of existence.",
+      "urdu": "اللہ کے سوا کوئی معبود نہیں، وہ زندہ ہے، ہر چیز کو قائم رکھنے والا ہے۔",
+      "romanUrdu": "Allah ke siwa koi mabood nahi, woh zinda hai, har cheez ko qaim rakhne wala hai.",
+      "reference": "Surah Al-Baqarah 2:255",
+      "repeatCount": 1
+    },
+    {
+      "id": 12,
+      "type": "evening",
+      "arabic": "قُلْ هُوَ اللَّهُ أَحَدٌ، اللَّهُ الصَّمَدُ",
+      "english": "Surah Al-Ikhlas: Say, He is Allah, the One. Allah, the Eternal Refuge.",
+      "urdu": "کہہ دو وہ اللہ ایک ہے، اللہ بے نیاز ہے۔",
+      "romanUrdu": "Keh do woh Allah aik hai, Allah be-niyaz hai.",
+      "reference": "Surah Al-Ikhlas 112",
+      "repeatCount": 3
+    },
+    {
+      "id": 13,
+      "type": "evening",
+      "arabic": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+      "english": "Surah Al-Falaq: Say, I seek refuge in the Lord of daybreak.",
+      "urdu": "کہہ دو میں صبح کے رب کی پناہ مانگتا ہوں۔",
+      "romanUrdu": "Keh do mein subah ke Rab ki panah maangta hun.",
+      "reference": "Surah Al-Falaq 113",
+      "repeatCount": 3
+    },
+    {
+      "id": 14,
+      "type": "evening",
+      "arabic": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+      "english": "Surah An-Nas: Say, I seek refuge in the Lord of mankind.",
+      "urdu": "کہہ دو میں لوگوں کے رب کی پناہ مانگتا ہوں۔",
+      "romanUrdu": "Keh do mein logon ke Rab ki panah maangta hun.",
+      "reference": "Surah An-Nas 114",
+      "repeatCount": 3
+    },
+    {
+      "id": 15,
+      "type": "evening",
+      "arabic": "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ",
+      "english": "Sayyidul Istighfar: O Allah, I have entered the evening calling You to witness, and the bearers of Your Throne to witness.",
+      "urdu": "اے اللہ! میں نے شام کی اس حال میں کہ میں تجھے اور تیرے عرش کے اٹھانے والوں کو گواہ بناتا ہوں۔",
+      "romanUrdu": "Aye Allah! Maine shaam ki is haal mein ke mein tujhe aur tere arsh ke uthane walon ko gawah banata hun.",
+      "reference": "Sahih al-Bukhari 6306",
+      "repeatCount": 1
+    },
+    {
+      "id": 16,
+      "type": "evening",
+      "arabic": "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "english": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+      "urdu": "میں اللہ کے مکمل کلمات کے ذریعے ہر اس چیز کے شر سے پناہ مانگتا ہوں جو اس نے پیدا کی۔",
+      "romanUrdu": "Mein Allah ke mukammal kalimat ke zariye har us cheez ke sharr se panah maangta hun jo usne paida ki.",
+      "reference": "Sahih Muslim 2708",
+      "repeatCount": 3
+    }
+  ]
+}

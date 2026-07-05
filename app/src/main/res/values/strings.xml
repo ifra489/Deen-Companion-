@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Deen Companion</string>
+    <!-- TODO: Replace this with your Google Web Client ID from the Firebase console if it changes -->
+    <string name="google_web_client_id">748788036867-k1sppf1ii4va3osgs4g075sq8r6imip0.apps.googleusercontent.com</string>
+</resources>
