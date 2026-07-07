@@ -46,7 +46,49 @@ class AuthViewModel @Inject constructor(
             state.copy(email = email, emailError = error)
         }
     }
+    private val _changePasswordResult = MutableStateFlow<UiState<Unit>>(UiState.Empty)
+    val changePasswordResult: StateFlow<UiState<Unit>> = _changePasswordResult.asStateFlow()
 
+    private val _deleteAccountResult = MutableStateFlow<UiState<Unit>>(UiState.Empty)
+    val deleteAccountResult: StateFlow<UiState<Unit>> = _deleteAccountResult.asStateFlow()
+
+    fun changePassword(currentPassword: String, newPassword: String) {
+        _changePasswordResult.value = UiState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            authUseCases.changePassword(currentPassword, newPassword)
+                .onSuccess { _changePasswordResult.value = UiState.Success(Unit) }
+                .onFailure { error -> _changePasswordResult.value = UiState.Error(error.message ?: "Failed to change password") }
+        }
+    }
+
+    fun deleteAccount(currentPassword: String) {
+        _deleteAccountResult.value = UiState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            authUseCases.deleteAccount(currentPassword)
+                .onSuccess {
+                    _deleteAccountResult.value = UiState.Success(Unit)
+                    _authResult.value = UiState.Empty
+                }
+                .onFailure { error -> _deleteAccountResult.value = UiState.Error(error.message ?: "Failed to delete account") }
+        }
+    }
+
+    fun resetChangePasswordState() {
+        _changePasswordResult.value = UiState.Empty
+    }
+
+    fun resetDeleteAccountState() {
+        _deleteAccountResult.value = UiState.Empty
+    }
+
+    fun sendPasswordResetLink(email: String) {
+        _changePasswordResult.value = UiState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            authUseCases.resetPassword(email)
+                .onSuccess { _changePasswordResult.value = UiState.Success(Unit) }
+                .onFailure { error -> _changePasswordResult.value = UiState.Error(error.message ?: "Failed to send reset link") }
+        }
+    }
     fun onPasswordChanged(password: String) {
         _formState.update { state ->
             val validation = authUseCases.validatePassword(password)

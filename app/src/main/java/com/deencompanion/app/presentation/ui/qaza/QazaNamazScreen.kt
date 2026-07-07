@@ -146,7 +146,7 @@ fun QazaSetupForm(modifier: Modifier = Modifier, onCalculate: (Int, Int, Int) ->
                 val started = ageStartedPraying.toIntOrNull() ?: obligation
                 if (current > 0) onCalculate(current, obligation, started)
             },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141C48)),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Calculate")
@@ -185,7 +185,7 @@ fun QazaPrayerCard(prayer: QazaPrayer, onMarkCompleted: (String, Int) -> Unit) {
             LinearProgressIndicator(
                 progress = { prayer.progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth().height(8.dp),
-                color = Color(0xFF2E7D32),
+                color = Color(0xFF141C48),
                 trackColor = Color(0xFFE0E0E0)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -208,7 +208,7 @@ fun QazaPrayerCard(prayer: QazaPrayer, onMarkCompleted: (String, Int) -> Unit) {
                     Button(
                         onClick = { onMarkCompleted(prayer.prayerType, 10) },
                         enabled = prayer.remaining > 0,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141C48)),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                     ) { Text("+10", fontSize = 12.sp) }
                 }

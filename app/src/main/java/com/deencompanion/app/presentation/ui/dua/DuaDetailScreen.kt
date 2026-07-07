@@ -1,7 +1,5 @@
 package com.deencompanion.app.presentation.ui.dua
 
-
-
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -173,24 +171,28 @@ fun DuaDetailScreen(
                                     .fillMaxWidth()
                                     .padding(16.dp)
                             ) {
-                                TranslationSection(label = "ENGLISH", content = dua.english)
+                                val preferredLanguage by viewModel.preferredLanguage.collectAsState()
+                                val orderedSections = remember(preferredLanguage) {
+                                    val all = listOf(
+                                        Triple("en", "ENGLISH", dua.english),
+                                        Triple("ur", "URDU", dua.urdu),
+                                        Triple("roman", "ROMAN URDU", dua.romanUrdu)
+                                    )
+                                    all.sortedByDescending { it.first == preferredLanguage }
+                                }
 
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = 12.dp),
-                                    color = Color(0xFFF5F5F5)
-                                )
-
-                                TranslationSection(label = "URDU", content = dua.urdu)
-
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = 12.dp),
-                                    color = Color(0xFFF5F5F5)
-                                )
-
-                                TranslationSection(label = "ROMAN URDU", content = dua.romanUrdu)
+                                orderedSections.forEachIndexed { index, (_, label, content) ->
+                                    TranslationSection(label = label, content = content)
+                                    if (index != orderedSections.lastIndex) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(vertical = 12.dp),
+                                            color = Color(0xFFF5F5F5)
+                                        )
+                                    }
+                                }
                             }
                         }
-
+                        
                         Spacer(modifier = Modifier.height(16.dp))
 
                         if (dua.reference.isNotBlank()) {

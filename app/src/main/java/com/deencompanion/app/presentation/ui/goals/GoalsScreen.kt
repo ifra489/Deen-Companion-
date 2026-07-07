@@ -48,7 +48,7 @@ fun GoalsScreen(
                 },
                 actions = {
                     IconButton(onClick = { title = ""; target = ""; showAddDialog = true }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Goal", tint = Color(0xFF2E7D32))
+                        Icon(Icons.Default.Add, contentDescription = "Add Goal", tint = Color(0xFF141C48))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
@@ -59,7 +59,7 @@ fun GoalsScreen(
         when (val s = state) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF2E7D32))
+                    CircularProgressIndicator(color = Color(0xFF141C48))
                 }
             }
             is UiState.Error -> {
@@ -119,7 +119,7 @@ fun GoalsScreen(
                         viewModel.addGoal(title, targetNum)
                         showAddDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141C48))
                 ) { Text("Add") }
             },
             dismissButton = {
@@ -172,7 +172,7 @@ fun GoalCard(goal: Goal, onIncrement: () -> Unit, onDelete: () -> Unit) {
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
                 modifier = Modifier.fillMaxWidth().height(8.dp),
-                color = Color(0xFF2E7D32),
+                color = Color(0xFF141C48),
                 trackColor = Color(0xFFE0E0E0)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -185,11 +185,11 @@ fun GoalCard(goal: Goal, onIncrement: () -> Unit, onDelete: () -> Unit) {
                 if (!isComplete) {
                     Button(
                         onClick = onIncrement,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0B218C)),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
                     ) { Text("+1", fontSize = 12.sp) }
                 } else {
-                    Text("🎉 Completed", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                    Text("🎉 Completed", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0B218C))
                 }
             }
         }

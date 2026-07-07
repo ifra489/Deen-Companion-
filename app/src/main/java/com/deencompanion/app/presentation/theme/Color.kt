@@ -26,7 +26,7 @@ val NightBlack = Color(0xFF0D0D1A)
 val NightSurface = Color(0xFF13131F)
 val NightCard = Color(0xFF1A1A2E)
 val NightCardAlt = Color(0xFF1E1E35)
-val White = Color(0xFFFFFFFF)
+val White = Color(0xFFECECEC)
 val OffWhite = Color(0xFFF3E5F5)
 
 // Text

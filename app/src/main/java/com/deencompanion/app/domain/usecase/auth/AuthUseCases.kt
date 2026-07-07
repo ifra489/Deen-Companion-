@@ -18,5 +18,7 @@ data class AuthUseCases @Inject constructor(
     val getCurrentUser: GetCurrentUserUseCase,
     val logout: LogoutUseCase,
     val validateEmail: ValidateEmailUseCase,
-    val validatePassword: ValidatePasswordUseCase
+    val validatePassword: ValidatePasswordUseCase,
+    val changePassword: ChangePasswordUseCase,
+    val deleteAccount: DeleteAccountUseCase
 )

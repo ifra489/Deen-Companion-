@@ -59,8 +59,8 @@ fun TasbeehScreen(
     // Consistent App Palette Colors
     val backgroundColor = Color(0xFFF5F5F5)
     val primaryTextColor = Color(0xFF212121)
-    val accentGreen = Color(0xFF4CAF50)
-    val accentGreenLight = Color(0x224CAF50)
+    val accentGreen = Color(0xFF141C48)
+    val accentGreenLight = Color(0x22044804)
     val grayColor = Color(0xFF757575)
     val inactiveBeadColor = Color(0xFFE0E0E0)
 

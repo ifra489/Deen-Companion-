@@ -30,7 +30,7 @@ import com.deencompanion.app.data.local.entity.QazaSettingsEntity
                 QazaPrayerEntity::class,
         QazaSettingsEntity::class
     ],
-    version = 8,
+    version = 9,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

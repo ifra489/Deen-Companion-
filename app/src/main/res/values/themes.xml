@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base application theme. -->
+
+    <!-- Main App Theme -->
     <style name="Theme.DeenCompanion" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize status bar and system navigation bar defaults if needed, 
-             although Compose will manage them dynamically. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <!-- Splash Screen Theme (Android 12+ Core SplashScreen API) -->
+    <!-- Splash Theme -->
     <style name="Theme.DeenCompanion.Splash" parent="Theme.SplashScreen">
-        <!-- Set the splash background to Primary Green (#2E7D32) -->
         <item name="windowSplashScreenBackground">#0D0D1A</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.DeenCompanion</item>
-
     </style>
+
 </resources>

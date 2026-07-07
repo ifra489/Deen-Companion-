@@ -9,8 +9,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.material.icons.rounded.Bookmark
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.EventAvailable
 import androidx.compose.material.icons.rounded.Flag
 import androidx.compose.material.icons.rounded.Loop
@@ -27,6 +30,8 @@ import com.deencompanion.app.presentation.navigation.NavRoutes
 
 import androidx.compose.material.icons.rounded.WbSunny
 import androidx.compose.material.icons.rounded.NightsStay
+import androidx.compose.material.icons.rounded.Settings
+
 data class MoreMenuItem(
     val title: String,
     val icon: ImageVector,
@@ -43,7 +48,11 @@ fun MoreScreen(navController: NavController) {
     MoreMenuItem("Evening Azkar", Icons.Rounded.NightsStay, NavRoutes.AzkarDetail.createRoute("evening")),
         MoreMenuItem("Habit Tracker", Icons.Rounded.CheckCircle, NavRoutes.Tracker.route),
         MoreMenuItem("My Goals", Icons.Rounded.Flag, NavRoutes.Goals.route),
-        MoreMenuItem("Qaza Namaz Tracker", Icons.Rounded.EventAvailable, NavRoutes.Journal.route)
+        MoreMenuItem("Qaza Namaz Tracker", Icons.Rounded.EventAvailable, NavRoutes.Journal.route),
+        MoreMenuItem("Zakat Calculator", Icons.Rounded.AttachMoney, NavRoutes.Zakat.route),
+        MoreMenuItem("Hijri Calendar", Icons.Rounded.CalendarMonth, NavRoutes.HijriCalendar.route),
+        MoreMenuItem("Achievements", Icons.Rounded.EmojiEvents, NavRoutes.Achievements.route),
+        MoreMenuItem("Settings", Icons.Rounded.Settings, NavRoutes.AppSettings.route)
     )
 
     Scaffold(

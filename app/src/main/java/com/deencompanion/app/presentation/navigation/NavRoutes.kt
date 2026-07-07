@@ -8,7 +8,7 @@ package com.deencompanion.app.presentation.navigation
  * to safely build path strings with arguments (e.g. "quran_surah/1").
  */
 sealed class NavRoutes(val route: String) {
-    
+    object AppSettings : NavRoutes("app_settings")
     // Auth Navigation Group
     object Login : NavRoutes("login")
     object Register : NavRoutes("register")

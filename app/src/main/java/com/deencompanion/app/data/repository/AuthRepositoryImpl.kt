@@ -39,7 +39,35 @@ class AuthRepositoryImpl @Inject constructor(
                 result.user ?: throw Exception("User is null after sign in")
             }.mapFailure { mapFirebaseException(it) }
         }
+    override suspend fun changePassword(currentPassword: String, newPassword: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val user = firebaseAuth.currentUser ?: throw Exception("No active session found")
+                val email = user.email ?: throw Exception("This account has no email to verify")
+                val credential = EmailAuthProvider.getCredential(email, currentPassword)
+                user.reauthenticate(credential).await()
+                user.updatePassword(newPassword).await()
+                Unit
+            }.mapFailure { mapFirebaseException(it) }
+        }
 
+    override suspend fun deleteAccount(currentPassword: String): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val user = firebaseAuth.currentUser ?: throw Exception("No active session found")
+                if (!user.isAnonymous) {
+                    val email = user.email ?: throw Exception("This account has no email to verify")
+                    val credential = EmailAuthProvider.getCredential(email, currentPassword)
+                    user.reauthenticate(credential).await()
+                }
+                val uid = user.uid
+                // Pehle Firestore document delete karo
+                firestore.collection("users").document(uid).delete().await()
+                // Phir Firebase Auth account delete karo
+                user.delete().await()
+                Unit
+            }.mapFailure { mapFirebaseException(it) }
+        }
     override suspend fun registerWithEmail(
         name: String,
         email: String,

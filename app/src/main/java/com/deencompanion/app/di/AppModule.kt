@@ -23,7 +23,8 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton
 import retrofit2.Retrofit
-
+import com.deencompanion.app.data.remote.api.GoldPriceApi
+import com.deencompanion.app.data.remote.api.ExchangeRateApi
 /**
  * LEARNING NOTE:
  * This Hilt module provides application-wide, long-lived singleton dependencies (Application Context, DataStore, API services).
@@ -34,6 +35,18 @@ import retrofit2.Retrofit
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
+    @Provides
+    @Singleton
+    fun provideGoldPriceApi(@Named("goldapi") retrofit: Retrofit): GoldPriceApi {
+        return retrofit.create(GoldPriceApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExchangeRateApi(@Named("exchangerate") retrofit: Retrofit): ExchangeRateApi {
+        return retrofit.create(ExchangeRateApi::class.java)
+    }
     @Provides
     @Singleton
     fun provideDataStore(

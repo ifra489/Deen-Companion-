@@ -24,7 +24,30 @@ object NetworkModule {
     private const val ALADHAN_BASE_URL = "https://api.aladhan.com/"
     private const val ALQURAN_BASE_URL = "https://api.alquran.cloud/"
     private const val NETWORK_TIMEOUT_SECONDS = 30L
+    private const val GOLD_API_BASE_URL = "https://api.gold-api.com/"
+    private const val EXCHANGE_RATE_BASE_URL = "https://open.er-api.com/"
 
+    @Provides
+    @Singleton
+    @Named("goldapi")
+    fun provideGoldApiRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(GOLD_API_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("exchangerate")
+    fun provideExchangeRateRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(EXCHANGE_RATE_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {

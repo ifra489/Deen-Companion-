@@ -48,7 +48,7 @@ fun HadithDetailScreen(
         when (val s = state) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF2E7D32))
+                    CircularProgressIndicator(color = Color(0xFF141C48))
                 }
             }
             is UiState.Error -> {
@@ -73,7 +73,7 @@ fun HadithDetailScreen(
                                 onClick = { viewModel.setLanguage(code) },
                                 label = { Text(label, fontSize = 12.sp) },
                                 colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = Color(0xFF2E7D32),
+                                    selectedContainerColor = Color(0xFF141C48),
                                     selectedLabelColor = Color.White
                                 )
                             )
@@ -92,6 +92,7 @@ fun HadithDetailScreen(
                                 text = hadith.arabic,
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Medium,
+                                color = Color.Black,
                                 lineHeight = 36.sp,
                                 textAlign = TextAlign.End,
                                 style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
@@ -115,7 +116,7 @@ fun HadithDetailScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Narrator: ${hadith.narrator}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF2E7D32))
+                            Text("Narrator: ${hadith.narrator}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF141C48))
                             Spacer(modifier = Modifier.height(4.dp))
                             Text("Source: ${hadith.source}", fontSize = 13.sp, color = Color(0xFF212121))
                             Spacer(modifier = Modifier.height(4.dp))

@@ -57,3 +57,12 @@ fun AdhanToggleSetting(
         )
     }
 }
+
+fun Row(
+    modifier: Modifier,
+    verticalAlignment: Alignment.Vertical,
+    horizontalArrangement: Arrangement.HorizontalOrVertical,
+    content: () -> Unit
+) {
+}
+

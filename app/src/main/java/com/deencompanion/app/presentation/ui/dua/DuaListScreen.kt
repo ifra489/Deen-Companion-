@@ -186,11 +186,11 @@ fun DuaCard(
 ) {
     val gradientColors = remember(dua.id) {
         val palettes = listOf(
-            Color(0xFF350A5B), // Deep purple
-            Color(0xFF350A5B), // Royal purple
-            Color(0xFF400485), // Dark violet
-            Color(0xFF2E036E), // Night purple
-            Color(0xFF3D1673)  // Rich purple
+            Color(0xFF575757), // Deep purple
+            Color(0xFF575757), // Royal purple
+            Color(0xFF575757), // Dark violet
+            Color(0xFF575757),// Night purple
+            Color(0xFF575757)  // Rich purple
         )
         palettes[dua.id % palettes.size]
     }

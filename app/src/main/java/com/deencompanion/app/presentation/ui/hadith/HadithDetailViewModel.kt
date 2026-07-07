@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deencompanion.app.domain.model.Hadith
+import com.deencompanion.app.domain.repository.SettingsRepository
 import com.deencompanion.app.domain.usecase.GetHadithByIdUseCase
 import com.deencompanion.app.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,12 +15,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HadithDetailViewModel @Inject constructor(
     private val getHadithByIdUseCase: GetHadithByIdUseCase,
+    private val settingsRepository: SettingsRepository,
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,8 +35,15 @@ class HadithDetailViewModel @Inject constructor(
     private val _selectedLanguage = MutableStateFlow("en")
     val selectedLanguage: StateFlow<String> = _selectedLanguage.asStateFlow()
 
-    init {
-        loadHadith()
+   init {
+        viewModelScope.launch {
+            val defaultLang = settingsRepository.defaultTranslationLanguage.first()
+            _selectedLanguage.value = when (defaultLang) {
+                "ur" -> "ur"
+                else -> "en"
+            }
+            loadHadith()
+        }
     }
 
     fun loadHadith() {

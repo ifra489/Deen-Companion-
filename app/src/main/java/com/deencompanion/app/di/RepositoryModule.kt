@@ -27,11 +27,30 @@ import com.deencompanion.app.data.repository.GoalRepositoryImpl
 import com.deencompanion.app.domain.repository.GoalRepository
 import com.deencompanion.app.data.repository.QazaNamazRepositoryImpl
 import com.deencompanion.app.domain.repository.QazaNamazRepository
-
+import com.deencompanion.app.data.repository.ZakatRepositoryImpl
+import com.deencompanion.app.domain.repository.ZakatRepository
+import com.deencompanion.app.data.repository.AchievementRepositoryImpl
+import com.deencompanion.app.domain.repository.AchievementRepository
+import com.deencompanion.app.data.repository.SettingsRepositoryImpl
+import com.deencompanion.app.domain.repository.SettingsRepository
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
+
+    @Binds
+    @Singleton
+    abstract fun bindZakatRepository(impl: ZakatRepositoryImpl): ZakatRepository
+
+
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAchievementRepository(impl: AchievementRepositoryImpl): AchievementRepository
     @Binds
     @Singleton
     abstract fun bindQazaNamazRepository(impl: QazaNamazRepositoryImpl): QazaNamazRepository

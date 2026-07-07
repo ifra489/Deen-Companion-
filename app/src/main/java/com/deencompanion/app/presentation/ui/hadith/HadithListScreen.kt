@@ -86,7 +86,7 @@ fun HadithListScreen(
                         onClick = { viewModel.onCategorySelected(category) },
                         label = { Text(category.replaceFirstChar { it.uppercase() }) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color(0xFF2E7D32),
+                            selectedContainerColor = Color(0xFF141C48),
                             selectedLabelColor = Color.White
                         )
                     )
@@ -96,7 +96,7 @@ fun HadithListScreen(
             when (listState) {
                 is UiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Color(0xFF2E7D32))
+                        CircularProgressIndicator(color = Color(0xFF141C48))
                     }
                 }
                 is UiState.Error -> {
@@ -146,7 +146,7 @@ fun HadithCard(hadith: Hadith, onClick: () -> Unit) {
                 text = hadith.narrator,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF2E7D32)
+                color = Color(0xFF141C48)
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(

@@ -10,7 +10,9 @@ import com.google.firebase.auth.FirebaseUser
  */
 interface AuthRepository {
     suspend fun loginWithEmail(email: String, password: String): Result<FirebaseUser>
-    
+    suspend fun changePassword(currentPassword: String, newPassword: String): Result<Unit>
+
+    suspend fun deleteAccount(currentPassword: String): Result<Unit>
     suspend fun registerWithEmail(name: String, email: String, password: String): Result<FirebaseUser>
     
     suspend fun loginWithGoogle(idToken: String): Result<FirebaseUser>

@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import com.deencompanion.app.domain.repository.SettingsRepository
+import kotlinx.coroutines.flow.first
 
 data class QuranDetailUiState(
     val selectedTranslation: String = "en",
@@ -38,6 +40,7 @@ class QuranDetailViewModel @Inject constructor(
     private val getSurahDetailUseCase: GetSurahDetailUseCase,
     private val getWordByWordUseCase: GetWordByWordUseCase,
     private val quranRepository: QuranRepository,
+    private val settingsRepository: SettingsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -52,10 +55,13 @@ class QuranDetailViewModel @Inject constructor(
     private var progressJob: Job? = null
 
     init {
-        loadSurahData()
-        loadWordByWordData()
+        viewModelScope.launch {
+            val defaultLang = settingsRepository.defaultTranslationLanguage.first()
+            _uiState.update { it.copy(selectedTranslation = defaultLang) }
+            loadSurahData()
+            loadWordByWordData()
+        }
     }
-
     fun loadSurahData() {
         viewModelScope.launch {
             _uiState.update { it.copy(normalSurahState = UiState.Loading) }

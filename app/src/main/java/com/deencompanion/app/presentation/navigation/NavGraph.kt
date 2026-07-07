@@ -34,6 +34,10 @@ import com.deencompanion.app.presentation.ui.quran.QuranDetailViewModel
 import com.deencompanion.app.presentation.ui.hadith.HadithListScreen
 import com.deencompanion.app.presentation.ui.hadith.HadithDetailScreen
 import com.deencompanion.app.presentation.ui.azkar.AzkarDetailScreen
+import com.deencompanion.app.presentation.ui.zakat.ZakatScreen
+import com.deencompanion.app.presentation.ui.hijri.HijriCalendarScreen
+import com.deencompanion.app.presentation.ui.achievements.AchievementsScreen
+import com.deencompanion.app.presentation.ui.settings.SettingsScreen
 /**
  * Central navigation graph definition for Deen Companion.
  */
@@ -167,18 +171,20 @@ fun NavGraph(
                 PlaceholderScreen(name = "Spiritual Journey Screen\nTODO(\"Replace with actual screen — Phase 11\")")
             }
             composable(NavRoutes.Achievements.route) {
-                PlaceholderScreen(name = "Achievements Screen\nTODO(\"Replace with actual screen — Phase 11\")")
+                AchievementsScreen(navController = navController)
             }
             composable(NavRoutes.Zakat.route) {
-                PlaceholderScreen(name = "Zakat Calculator Screen\nTODO(\"Replace with actual screen — Phase 12\")")
+                ZakatScreen(navController = navController)
             }
             composable(NavRoutes.HijriCalendar.route) {
-                PlaceholderScreen(name = "Hijri Calendar Screen\nTODO(\"Replace with actual screen — Phase 12\")")
+                HijriCalendarScreen(navController = navController)
             }
             composable(NavRoutes.Settings.route) {
                 MoreScreen(navController = navController)
             }
-
+            composable(NavRoutes.AppSettings.route) {
+                SettingsScreen(navController = navController, authViewModel = viewModel)
+            }
             // --- Parameterized Detail Screens ---
             composable(
                 route = NavRoutes.QuranSurah.route,

@@ -39,21 +39,24 @@ fun AzkarDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title, color = Color(0xFF212121), fontWeight = FontWeight.Bold) },
+                title = { Text(title, color = Color(0xFFFFFFFF), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF212121))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(
+                            0xFFE3E3E3
+                        )
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF230A3D))
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = Color(0xFFD3D3D3)
     ) { padding ->
         when (val s = state) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF2E7D32))
+                    CircularProgressIndicator(color = Color(0xFF141C48))
                 }
             }
             is UiState.Error -> {
@@ -101,7 +104,7 @@ fun AzkarCard(
             .clickable { if (!isComplete) onTap() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isComplete) Color(0xFFE8F5E9) else Color.White
+            containerColor = if (isComplete) Color(0xFFE5E5E5) else Color.White
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -110,6 +113,7 @@ fun AzkarCard(
                 text = azkar.arabic,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
+                color = Color.Black,
                 lineHeight = 34.sp,
                 textAlign = TextAlign.End,
                 style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
@@ -130,11 +134,14 @@ fun AzkarCard(
                     text = if (isComplete) "Completed" else "Tap to count: $currentCount / ${azkar.repeatCount}",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (isComplete) Color(0xFF2E7D32) else Color(0xFF757575)
+                    color = if (isComplete) Color(0xFF19125D) else Color(0xFFC0C0C0)
                 )
                 Row {
                     if (isComplete) {
-                        Icon(Icons.Default.Check, contentDescription = "Done", tint = Color(0xFF2E7D32))
+                        Icon(Icons.Default.Check, contentDescription = "Done", tint = Color(
+                            0xFF181F59
+                        )
+                        )
                     }
                     IconButton(onClick = onReset) {
                         Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.Gray, modifier = Modifier.size(18.dp))
