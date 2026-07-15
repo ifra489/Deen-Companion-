@@ -39,34 +39,31 @@ fun AzkarDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title, color = Color(0xFFFFFFFF), fontWeight = FontWeight.Bold) },
+                title = { Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(
-                            0xFFE3E3E3
-                        )
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF230A3D))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFD3D3D3)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         when (val s = state) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF141C48))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
             is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = Color.Red)
+                    Text(s.message, color = MaterialTheme.colorScheme.error)
                 }
             }
             is UiState.Empty -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text("No Azkar available", color = Color.Gray)
+                    Text("No Azkar available", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                 }
             }
             is UiState.Success -> {
@@ -104,7 +101,7 @@ fun AzkarCard(
             .clickable { if (!isComplete) onTap() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isComplete) Color(0xFFE5E5E5) else Color.White
+            containerColor = if (isComplete) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -113,16 +110,16 @@ fun AzkarCard(
                 text = azkar.arabic,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSurface,
                 lineHeight = 34.sp,
                 textAlign = TextAlign.End,
                 style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = azkar.english, fontSize = 14.sp, color = Color(0xFF212121), lineHeight = 20.sp)
+            Text(text = azkar.english, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface, lineHeight = 20.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = azkar.reference, fontSize = 11.sp, color = Color.Gray)
+            Text(text = azkar.reference, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
@@ -134,17 +131,14 @@ fun AzkarCard(
                     text = if (isComplete) "Completed" else "Tap to count: $currentCount / ${azkar.repeatCount}",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = if (isComplete) Color(0xFF19125D) else Color(0xFFC0C0C0)
+                    color = if (isComplete) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Row {
                     if (isComplete) {
-                        Icon(Icons.Default.Check, contentDescription = "Done", tint = Color(
-                            0xFF181F59
-                        )
-                        )
+                        Icon(Icons.Default.Check, contentDescription = "Done", tint = MaterialTheme.colorScheme.primary)
                     }
                     IconButton(onClick = onReset) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.Gray, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
                     }
                 }
             }

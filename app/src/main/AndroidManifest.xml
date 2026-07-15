@@ -24,24 +24,30 @@
     <application
         android:name=".DeenCompanionApp"
         android:allowBackup="false"
-        android:icon="@drawable/ic_splash"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_splash"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/Theme.DeenCompanion.Splash"
         tools:targetApi="35">
 
-        <!-- Single Activity hosting Jetpack Compose UI -->
+        <!-- Splash Activity to display branding first -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.DeenCompanion.Splash">
+            android:theme="@style/Theme.DeenCompanion.NoSystemSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Single Activity hosting Jetpack Compose UI -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DeenCompanion" />
 
         <!-- Receiver for rescheduling alarms and notifications when the phone restarts -->
         <receiver

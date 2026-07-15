@@ -31,9 +31,9 @@ fun QuranListScreen(
     val surahState by viewModel.surahListState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    val appBackground = Color(0xFFF5F5F5)
-    val appGreenAccent = Color(0xFF4527A0)
-    val appTextPrimary = Color(0xFF212121)
+    val appBackground = MaterialTheme.colorScheme.background
+    val appGreenAccent = MaterialTheme.colorScheme.primary
+    val appTextPrimary = MaterialTheme.colorScheme.onBackground
 
     Scaffold(
         topBar = {
@@ -42,7 +42,7 @@ fun QuranListScreen(
                     Text(
                         text = "Holy Quran",
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -71,7 +71,7 @@ fun QuranListScreen(
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = appGreenAccent,
-                    unfocusedBorderColor = Color.LightGray
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
                 )
             )
 
@@ -85,7 +85,7 @@ fun QuranListScreen(
                 is UiState.Error -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(state.message, color = Color.Red, textAlign = TextAlign.Center)
+                            Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = { viewModel.loadSurahs() },
@@ -113,7 +113,7 @@ fun QuranListScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(filteredSurahs, key = { it.number }) { surah ->
-                            SurahCardItem(
+                             SurahCardItem(
                                 surah = surah,
                                 appGreenAccent = appGreenAccent,
                                 appTextPrimary = appTextPrimary,
@@ -136,7 +136,7 @@ fun SurahCardItem(
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -176,7 +176,7 @@ fun SurahCardItem(
                 )
                 Text(
                     text = "${surah.nameEnglish} • ${surah.revelationType} • ${surah.versesCount} Ayahs",
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 12.sp
                 )
             }

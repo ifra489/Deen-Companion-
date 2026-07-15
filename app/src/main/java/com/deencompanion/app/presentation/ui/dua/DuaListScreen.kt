@@ -44,7 +44,7 @@ fun DuaListScreen(
                 title = {
                     Text(
                         text = "Duas",
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -53,16 +53,16 @@ fun DuaListScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(0xFF212121)
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF5F5F5)
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -95,9 +95,11 @@ fun DuaListScreen(
                 },
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF212121),
-                    unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-                    focusedLabelColor = Color(0xFF212121)
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 ),
                 singleLine = true
             )
@@ -110,7 +112,7 @@ fun DuaListScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = Color(0xFF212121))
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 is UiState.Error -> {
@@ -124,15 +126,15 @@ fun DuaListScreen(
                     ) {
                         Text(
                             text = errorMessage,
-                            color = Color.Red,
+                            color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Button(
                             onClick = { viewModel.loadDuas() },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF212121))
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                         ) {
-                            Text("Retry", color = Color.White)
+                            Text("Retry", color = MaterialTheme.colorScheme.onPrimary)
                         }
                     }
                 }
@@ -143,7 +145,7 @@ fun DuaListScreen(
                     ) {
                         Text(
                             text = "No Duas available",
-                            color = Color(0xFF212121).copy(alpha = 0.6f),
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                             textAlign = TextAlign.Center
                         )
                     }
@@ -156,7 +158,7 @@ fun DuaListScreen(
                         ) {
                             Text(
                                 text = "No results found for \"$searchQuery\"",
-                                color = Color(0xFF212121).copy(alpha = 0.6f),
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -184,53 +186,42 @@ fun DuaCard(
     dua: Dua,
     onClick: () -> Unit
 ) {
-    val gradientColors = remember(dua.id) {
-        val palettes = listOf(
-            Color(0xFF575757), // Deep purple
-            Color(0xFF575757), // Royal purple
-            Color(0xFF575757), // Dark violet
-            Color(0xFF575757),// Night purple
-            Color(0xFF575757)  // Rich purple
-        )
-        palettes[dua.id % palettes.size]
-    }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(gradientColors)
                 .padding(16.dp)
         ) {
-            Column {
-                Text(
-                    text = com.deencompanion.app.util.DuaTitleGenerator.generateTitle(dua.english),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White.copy(alpha = 0.9f),
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                Text(
-                    text = dua.transliteration,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Text(
-                    text = dua.english,
-                    fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.85f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            Text(
+                text = com.deencompanion.app.util.DuaTitleGenerator.generateTitle(dua.english),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = dua.transliteration,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = dua.english,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

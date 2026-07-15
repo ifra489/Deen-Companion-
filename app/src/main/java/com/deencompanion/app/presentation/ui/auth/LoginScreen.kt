@@ -151,9 +151,8 @@ fun LoginScreen(
 
             // crescent moon logo (reused from splash screen vector resource)
             Image(
-                painter = painterResource(id = R.drawable.ic_splash),
+                painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = "Deen Companion Moon Logo",
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.size(96.dp)
             )
 

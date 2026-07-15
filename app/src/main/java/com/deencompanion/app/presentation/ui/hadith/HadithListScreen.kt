@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,16 +41,16 @@ fun HadithListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hadith", color = Color(0xFF212121), fontWeight = FontWeight.Bold) },
+                title = { Text("Hadith", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF212121))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -86,8 +85,8 @@ fun HadithListScreen(
                         onClick = { viewModel.onCategorySelected(category) },
                         label = { Text(category.replaceFirstChar { it.uppercase() }) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color(0xFF141C48),
-                            selectedLabelColor = Color.White
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
                 }
@@ -96,24 +95,24 @@ fun HadithListScreen(
             when (listState) {
                 is UiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Color(0xFF141C48))
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 is UiState.Error -> {
                     val errorMessage = (listState as UiState.Error).message
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(errorMessage, color = Color.Red, textAlign = TextAlign.Center)
+                        Text(errorMessage, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
                     }
                 }
                 is UiState.Empty -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No Hadiths available", color = Color.Gray)
+                        Text("No Hadiths available", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                     }
                 }
                 is UiState.Success -> {
                     if (filteredHadiths.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No results found", color = Color.Gray)
+                            Text("No results found", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                         }
                     } else {
                         LazyColumn(
@@ -138,7 +137,7 @@ fun HadithCard(hadith: Hadith, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
@@ -146,13 +145,13 @@ fun HadithCard(hadith: Hadith, onClick: () -> Unit) {
                 text = hadith.narrator,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF141C48)
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = hadith.english,
                 fontSize = 15.sp,
-                color = Color(0xFF212121),
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
@@ -160,7 +159,7 @@ fun HadithCard(hadith: Hadith, onClick: () -> Unit) {
             Text(
                 text = hadith.reference,
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

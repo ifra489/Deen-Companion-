@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,11 +14,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -37,8 +40,11 @@ import com.deencompanion.app.util.UiState
 fun SettingsScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
+    darkTheme: Boolean,
+    onThemeToggle: (Boolean) -> Unit,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
+
     val context = LocalContext.current
     val authResult by authViewModel.authResult.collectAsState()
     var showHelpDialog by remember { mutableStateOf(false) }
@@ -91,7 +97,7 @@ fun SettingsScreen(
                     SettingsActionRow(icon = Icons.Default.Lock, label = "Change Password") {
                         showChangePasswordDialog = true
                     }
-                    SettingsActionRow(icon = Icons.Default.Logout, label = "Logout") {
+                    SettingsActionRow(icon = Icons.AutoMirrored.Filled.Logout, label = "Logout") {
                         showLogoutDialog = true
                     }
                     SettingsActionRow(
@@ -129,13 +135,46 @@ fun SettingsScreen(
             }
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Notifications Section
-            SettingsSectionTitle("Notifications")
+            // Appearance Section
+            SettingsSectionTitle("Appearance")
             Card(shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
-                Box(modifier = Modifier.padding(16.dp)) {
-                    AdhanToggleSetting()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = "Dark Mode",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sp
+                        )
+                        Text(
+                            text = if (darkTheme) "Navy theme enabled" else "Light theme enabled",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = darkTheme,
+                        onCheckedChange = onThemeToggle,
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                            uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    )
                 }
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Notifications Section
+            SettingsSectionTitle("Notifications")
+            AdhanToggleSetting()
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -317,7 +356,7 @@ fun SettingsSectionTitle(text: String) {
 fun SettingsActionRow(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
-    tint: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
+    tint: Color = MaterialTheme.colorScheme.onSurface,
     onClick: () -> Unit
 ) {
     Row(

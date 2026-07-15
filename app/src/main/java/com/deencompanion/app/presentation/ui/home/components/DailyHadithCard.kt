@@ -28,17 +28,17 @@ fun DailyHadithCard(hadith: DailyHadith?) {
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Gold top accent bar (4dp)
+            // Top accent bar (4dp)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
-                    .background(Color(0xFFF9A825))
+                    .background(MaterialTheme.colorScheme.primary)
             )
 
             Column(
@@ -54,13 +54,13 @@ fun DailyHadithCard(hadith: DailyHadith?) {
                     Icon(
                         imageVector = Icons.Rounded.Book,
                         contentDescription = "Hadith Icon",
-                        tint = Color(0xFFF9A825),
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Daily Hadith",
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -74,7 +74,7 @@ fun DailyHadithCard(hadith: DailyHadith?) {
                     // Arabic text (RTL, 18sp, center)
                     Text(
                         text = hadith.arabicText,
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -83,14 +83,14 @@ fun DailyHadithCard(hadith: DailyHadith?) {
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // English translation (14sp, dark)
                     Text(
                         text = hadith.translation,
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -101,7 +101,7 @@ fun DailyHadithCard(hadith: DailyHadith?) {
                     // Reference + Narrator (12sp, grey, bottom)
                     Text(
                         text = "${hadith.reference} • Narrated by ${hadith.narrator}",
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.End,
@@ -133,7 +133,7 @@ fun ShimmerHadithPlaceholder() {
                 .height(18.dp)
                 .align(Alignment.CenterHorizontally)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
         Spacer(modifier = Modifier.height(8.dp))
         Box(
@@ -142,14 +142,14 @@ fun ShimmerHadithPlaceholder() {
                 .height(18.dp)
                 .align(Alignment.CenterHorizontally)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
         Spacer(modifier = Modifier.height(16.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color.LightGray.copy(alpha = 0.3f))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
         )
         Spacer(modifier = Modifier.height(16.dp))
         Box(
@@ -157,7 +157,7 @@ fun ShimmerHadithPlaceholder() {
                 .fillMaxWidth(0.85f)
                 .height(14.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
         Spacer(modifier = Modifier.height(6.dp))
         Box(
@@ -165,7 +165,7 @@ fun ShimmerHadithPlaceholder() {
                 .fillMaxWidth(0.6f)
                 .height(14.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
     }
 }

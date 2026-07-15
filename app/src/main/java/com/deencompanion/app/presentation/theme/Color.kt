@@ -1,39 +1,86 @@
 package com.deencompanion.app.presentation.theme
 
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-// ── Purple Night Theme ──────────────────────────────
+// ── Navy + Gold Palette ──────────────────
 
-// Primary — Royal Purple
-val Purple80 = Color(0xFFCE93D8)
-val Purple60 = Color(0xFFAB47BC)
-val Purple40 = Color(0xFF7B1FA2)
-val Purple20 = Color(0xFF4A148C)
+// Navy shades
+val NavyDarkest   = Color(0xFF070E1A)
+val NavyDark      = Color(0xFF0A1628)
+val NavyCard      = Color(0xFF0F1F3D)
+val NavySurface   = Color(0xFF162040)
+val NavyLight     = Color(0xFF1E2D52)
+val NavyMedium    = Color(0xFF243560)
 
-// Secondary — Deep Violet
-val Violet80 = Color(0xFFB39DDB)
-val Violet60 = Color(0xFF7E57C2)
-val Violet40 = Color(0xFF4527A0)
-val Violet20 = Color(0xFF1A0050)
+// Gold shades
+val GoldPrimary   = Color(0xFFC9A84C)
 
-// Tertiary — Gold Accent
-val Gold80 = Color(0xFFFFD54F)
-val Gold60 = Color(0xFFF9A825)
-val Gold40 = Color(0xFFF57F17)
+// Legacy / Shortcut for screens
+val PrimaryColor = GoldPrimary
+val GoldLight     = Color(0xFFE8CC7A)
+val GoldSoft      = Color(0xFFF5E6B8)
+val GoldDark      = Color(0xFF9C7A2E)
 
 // Neutrals
-val NightBlack = Color(0xFF0D0D1A)
-val NightSurface = Color(0xFF13131F)
-val NightCard = Color(0xFF1A1A2E)
-val NightCardAlt = Color(0xFF1E1E35)
-val White = Color(0xFFECECEC)
-val OffWhite = Color(0xFFF3E5F5)
+val PureWhite     = Color(0xFFFFFFFF)
+val OffWhite      = Color(0xFFF8F9FF)
+val LightSurface  = Color(0xFFEEF1FB)
+val TextMutedDark = Color(0xFF8899BB)
+val TextMutedLight = Color(0xFF5566AA)
+val ErrorRed      = Color(0xFFCF6679)
 
-// Text
-val TextPrimary = Color(0xFFFFFFFF)
-val TextSecondary = Color(0xFFCE93D8)
-val TextMuted = Color(0xFF888899)
+// ── DARK Color Scheme ────────────────────
+// Navy background + Gold accents
+val DeenDarkColorScheme = darkColorScheme(
+    primary              = GoldPrimary,
+    onPrimary            = NavyDarkest,
+    primaryContainer     = NavyCard,
+    onPrimaryContainer   = GoldLight,
+    secondary            = GoldLight,
+    onSecondary          = NavyDarkest,
+    secondaryContainer   = NavySurface,
+    onSecondaryContainer = GoldSoft,
+    tertiary             = GoldLight,
+    onTertiary           = NavyDarkest,
+    tertiaryContainer    = NavyLight,
+    onTertiaryContainer  = GoldSoft,
+    background           = NavyDark,
+    onBackground         = PureWhite,
+    surface              = NavyCard,
+    onSurface            = PureWhite,
+    surfaceVariant       = NavySurface,
+    onSurfaceVariant     = TextMutedDark,
+    error                = ErrorRed,
+    onError              = PureWhite,
+    outline              = GoldDark,
+    outlineVariant       = NavyLight
+)
 
-// Status
-val ErrorRed = Color(0xFFCF6679)
-val SuccessGreen = Color(0xFF81C784)
+// ── LIGHT Color Scheme ───────────────────
+// White background + Navy text + Gold accents
+val DeenLightColorScheme = lightColorScheme(
+    primary              = NavyDark,
+    onPrimary            = PureWhite,
+    primaryContainer     = LightSurface,
+    onPrimaryContainer   = NavyDarkest,
+    secondary            = GoldDark,
+    onSecondary          = PureWhite,
+    secondaryContainer   = GoldSoft,
+    onSecondaryContainer = NavyDarkest,
+    tertiary             = GoldPrimary,
+    onTertiary           = NavyDarkest,
+    tertiaryContainer    = GoldSoft,
+    onTertiaryContainer  = NavyDarkest,
+    background           = OffWhite,
+    onBackground         = NavyDark,
+    surface              = PureWhite,
+    onSurface            = NavyDark,
+    surfaceVariant       = LightSurface,
+    onSurfaceVariant     = TextMutedLight,
+    error                = Color(0xFFB00020),
+    onError              = PureWhite,
+    outline              = NavyMedium,
+    outlineVariant       = LightSurface
+)

@@ -18,8 +18,9 @@ class SettingsRepositoryImpl @Inject constructor(
 
     private val darkThemeKey = booleanPreferencesKey("dark_theme_enabled")
     private val defaultLanguageKey = stringPreferencesKey("default_translation_language")
+    private val adhanEnabledKey = booleanPreferencesKey("adhan_notifications_enabled")
 
-    override val isDarkTheme = dataStore.data.map { prefs -> prefs[darkThemeKey] ?: true }
+    override val isDarkTheme = dataStore.data.map { prefs -> prefs[darkThemeKey] ?: false }
 
     override suspend fun setDarkTheme(enabled: Boolean) {
         dataStore.edit { it[darkThemeKey] = enabled }
@@ -29,5 +30,11 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setDefaultTranslationLanguage(language: String) {
         dataStore.edit { it[defaultLanguageKey] = language }
+    }
+
+    override val isAdhanEnabled = dataStore.data.map { prefs -> prefs[adhanEnabledKey] ?: true }
+
+    override suspend fun setAdhanEnabled(enabled: Boolean) {
+        dataStore.edit { it[adhanEnabledKey] = enabled }
     }
 }

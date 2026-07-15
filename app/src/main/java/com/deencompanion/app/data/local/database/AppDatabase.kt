@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 package com.deencompanion.app.data.local.database
 
 import android.content.Context
@@ -19,6 +27,7 @@ import com.deencompanion.app.data.local.entity.GoalEntity
 import com.deencompanion.app.data.local.dao.QazaNamazDao
 import com.deencompanion.app.data.local.entity.QazaPrayerEntity
 import com.deencompanion.app.data.local.entity.QazaSettingsEntity
+
 @Database(
     entities = [
         PrayerRecordEntity::class,
@@ -27,10 +36,11 @@ import com.deencompanion.app.data.local.entity.QazaSettingsEntity
         HabitEntity::class,
         HabitCompletionEntity::class,
         GoalEntity::class,
-                QazaPrayerEntity::class,
-        QazaSettingsEntity::class
+        QazaPrayerEntity::class,
+        QazaSettingsEntity::class,
+        com.deencompanion.app.data.local.entity.BookmarkEntity::class
     ],
-    version = 9,
+    version = 10,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -40,11 +50,11 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
     abstract fun goalDao(): GoalDao
     abstract fun qazaNamazDao(): QazaNamazDao
+    abstract fun bookmarkDao(): com.deencompanion.app.data.local.dao.BookmarkDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(

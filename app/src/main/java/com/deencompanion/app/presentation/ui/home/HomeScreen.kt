@@ -66,7 +66,7 @@ fun HomeScreen(
     val countdown by viewModel.countdownTimer.collectAsState()
     val userName by viewModel.userName.collectAsState()
     Scaffold(
-        containerColor = Color(0xFFF5F5F5) // Off-white/light gray background
+        containerColor = MaterialTheme.colorScheme.background // Unified background
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -84,14 +84,14 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = "AssalamuAlaikum",
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Normal
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = userName,
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )

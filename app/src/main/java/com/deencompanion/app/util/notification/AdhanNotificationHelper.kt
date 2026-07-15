@@ -40,18 +40,18 @@ object AdhanNotificationHelper {
             )
         }
 
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle("Time for $prayerName")
             .setContentText("It's time to pray $prayerName")
-            .setSmallIcon(R.drawable.ic_splash)
+            .setSmallIcon(R.drawable.app_icon)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .apply {
-                if (pendingIntent != null) {
-                    setContentIntent(pendingIntent)
-                }
-            }
-            .build()
+
+        if (pendingIntent != null) {
+            builder.setContentIntent(pendingIntent)
+        }
+
+        val notification = builder.build()
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(prayerName.hashCode(), notification)

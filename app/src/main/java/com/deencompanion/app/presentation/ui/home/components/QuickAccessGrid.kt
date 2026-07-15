@@ -32,7 +32,7 @@ fun QuickAccessGrid(navController: NavController) {
         // Title: "Quick Access" (medium, dark)
         Text(
             text = "Quick Access",
-            color = Color(0xFF212121),
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 12.dp)
@@ -46,14 +46,14 @@ fun QuickAccessGrid(navController: NavController) {
             QuickAccessCard(
                 icon = Icons.Rounded.Favorite,
                 label = "Prayer",
-                color = Color(0xFF2E7D32),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f),
                 onClick = { navController.navigate(NavRoutes.Prayer.route) }
             )
             QuickAccessCard(
                 icon = Icons.Rounded.MenuBook,
                 label = "Quran",
-                color = Color(0xFF2E7D32),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f),
                 onClick = { navController.navigate(NavRoutes.Quran.route) }
             )
@@ -69,14 +69,14 @@ fun QuickAccessGrid(navController: NavController) {
             QuickAccessCard(
                 icon = Icons.Rounded.Favorite,
                 label = "Duas",
-                color = Color(0xFFF9A825), // Gold color
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f),
                 onClick = { navController.navigate(NavRoutes.Dua.route) }
             )
             QuickAccessCard(
                 icon = Icons.Rounded.Loop,
                 label = "Tasbeeh",
-                color = Color(0xFF2E7D32),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f),
                 onClick = { navController.navigate(NavRoutes.Tasbeeh.route) }
             )
@@ -98,7 +98,7 @@ fun QuickAccessCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Column(
@@ -117,10 +117,10 @@ fun QuickAccessCard(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = label,
-                color = Color(0xFF212121),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
             )
         }
     }
-}
+}

@@ -14,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -48,7 +49,7 @@ fun PrayerScreen(
                 title = {
                     Text(
                         text = "Prayer Tracker",
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -57,16 +58,16 @@ fun PrayerScreen(
                         Icon(
                             imageVector = Icons.Default.History,
                             contentDescription = "Prayer History",
-                            tint = Color(0xFF212121)
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF5F5F5)
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -82,7 +83,7 @@ fun PrayerScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.surface
                     ),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 2.dp
@@ -99,7 +100,7 @@ fun PrayerScreen(
                             text = prayerName,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF212121)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Switch(
                             checked = isPrayed,
@@ -107,10 +108,8 @@ fun PrayerScreen(
                                 viewModel.togglePrayerStatus(prayerName, checked)
                             },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color(0xFF9C27B0),
-                                checkedTrackColor = Color(0xFF4527A0),
-                                uncheckedThumbColor = Color(0xFF888899),
-                                uncheckedTrackColor = Color(0xFF1A1A2E)
+                                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                             )
                         )
                     }

@@ -27,10 +27,6 @@ import com.deencompanion.app.domain.model.HijriCalendarDay
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private val PurpleAccent = Color(0xFF6A1B9A)
-private val PurpleAccentLight = Color(0xFFF3E5F5)
-private val TextDark = Color(0xFF212121)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HijriCalendarScreen(
@@ -44,16 +40,16 @@ fun HijriCalendarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hijri Calendar", color = TextDark, fontWeight = FontWeight.Bold) },
+                title = { Text("Hijri Calendar", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = TextDark)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -69,19 +65,19 @@ fun HijriCalendarScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { viewModel.goToPreviousMonth() }) {
-                    Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Month", tint = PurpleAccent)
+                    Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Month", tint = MaterialTheme.colorScheme.primary)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "${state.monthNameEn} ${state.hijriYear} AH",
                         fontWeight = FontWeight.Bold,
                         fontSize = 17.sp,
-                        color = TextDark
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                    Text(text = state.monthNameAr, fontSize = 13.sp, color = Color.Gray)
+                    Text(text = state.monthNameAr, fontSize = 13.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
                 }
                 IconButton(onClick = { viewModel.goToNextMonth() }) {
-                    Icon(Icons.Default.ChevronRight, contentDescription = "Next Month", tint = PurpleAccent)
+                    Icon(Icons.Default.ChevronRight, contentDescription = "Next Month", tint = MaterialTheme.colorScheme.primary)
                 }
             }
 
@@ -96,7 +92,7 @@ fun HijriCalendarScreen(
                         textAlign = TextAlign.Center,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -127,14 +123,14 @@ fun HijriCalendarScreen(
                 text = "Important Islamic Dates (${state.hijriYear} AH)",
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
-                color = TextDark
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(10.dp))
 
             state.events.forEach { event ->
                 Card(
                     shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = PurpleAccentLight),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
@@ -147,13 +143,13 @@ fun HijriCalendarScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(event.name, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PurpleAccent)
-                            Text(event.hijriDate, fontSize = 11.sp, color = Color.Gray)
+                            Text(event.name, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.primary)
+                            Text(event.hijriDate, fontSize = 11.sp, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f))
                         }
                         Text(
                             text = event.gregorianDate.format(gregorianFormatter),
                             fontSize = 12.sp,
-                            color = TextDark
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
@@ -163,7 +159,7 @@ fun HijriCalendarScreen(
             Text(
                 text = "Note: Hijri dates are astronomically calculated and may differ by a day from local moon sighting announcements.",
                 fontSize = 10.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
             )
         }
     }
@@ -182,7 +178,7 @@ fun HijriDayCell(day: HijriCalendarDay?, formatter: DateTimeFormatter) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        if (day.isToday) PurpleAccent else Color.White,
+                        if (day.isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
                         RoundedCornerShape(8.dp)
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -192,12 +188,12 @@ fun HijriDayCell(day: HijriCalendarDay?, formatter: DateTimeFormatter) {
                     text = "${day.hijriDay}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    color = if (day.isToday) Color.White else TextDark
+                    color = if (day.isToday) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "${day.gregorianDate.dayOfMonth}",
                     fontSize = 9.sp,
-                    color = if (day.isToday) Color.White.copy(alpha = 0.85f) else Color.Gray
+                    color = if (day.isToday) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f) else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

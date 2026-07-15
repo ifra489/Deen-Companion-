@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
@@ -34,26 +33,26 @@ fun HadithDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hadith", color = Color(0xFF212121), fontWeight = FontWeight.Bold) },
+                title = { Text("Hadith", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF212121))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         when (val s = state) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF141C48))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
             is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = Color.Red)
+                    Text(s.message, color = MaterialTheme.colorScheme.error)
                 }
             }
             is UiState.Empty -> {}
@@ -73,8 +72,8 @@ fun HadithDetailScreen(
                                 onClick = { viewModel.setLanguage(code) },
                                 label = { Text(label, fontSize = 12.sp) },
                                 colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = Color(0xFF141C48),
-                                    selectedLabelColor = Color.White
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
                                 )
                             )
                         }
@@ -84,7 +83,7 @@ fun HadithDetailScreen(
 
                     Card(
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(20.dp)) {
@@ -92,7 +91,7 @@ fun HadithDetailScreen(
                                 text = hadith.arabic,
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.Black,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 lineHeight = 36.sp,
                                 textAlign = TextAlign.End,
                                 style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
@@ -104,7 +103,7 @@ fun HadithDetailScreen(
                                 "roman" -> hadith.romanUrdu
                                 else -> hadith.english
                             }
-                            Text(text = translation, fontSize = 15.sp, color = Color(0xFF212121), lineHeight = 24.sp)
+                            Text(text = translation, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface, lineHeight = 24.sp)
                         }
                     }
 
@@ -112,15 +111,15 @@ fun HadithDetailScreen(
 
                     Card(
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Narrator: ${hadith.narrator}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF141C48))
+                            Text("Narrator: ${hadith.narrator}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Source: ${hadith.source}", fontSize = 13.sp, color = Color(0xFF212121))
+                            Text("Source: ${hadith.source}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Reference: ${hadith.reference}", fontSize = 13.sp, color = Color(0xFF212121))
+                            Text("Reference: ${hadith.reference}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
                         }
                     }
                 }

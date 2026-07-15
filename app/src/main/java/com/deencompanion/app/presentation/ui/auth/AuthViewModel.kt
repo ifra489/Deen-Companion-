@@ -28,7 +28,7 @@ class AuthViewModel @Inject constructor(
     private val _formState = MutableStateFlow(AuthFormState())
     val formState: StateFlow<AuthFormState> = _formState.asStateFlow()
 
-    private val _authResult = MutableStateFlow<UiState<User>>(UiState.Empty)
+    private val _authResult = MutableStateFlow<UiState<User>>(UiState.Loading)
     val authResult: StateFlow<UiState<User>> = _authResult.asStateFlow()
 
     init {

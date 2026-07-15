@@ -23,10 +23,6 @@ import com.deencompanion.app.util.UiState
 import java.text.NumberFormat
 import java.util.*
 
-private val PurpleAccent = Color(0xFF6A1B9A)
-private val PurpleAccentLight = Color(0xFFF3E5F5)
-private val TextDark = Color(0xFF212121)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ZakatScreen(
@@ -48,16 +44,16 @@ fun ZakatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Zakat Calculator", color = TextDark, fontWeight = FontWeight.Bold) },
+                title = { Text("Zakat Calculator", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = TextDark)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -69,16 +65,16 @@ fun ZakatScreen(
             when (val rs = ratesState) {
                 is UiState.Loading -> {
                     Box(modifier = Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = PurpleAccent)
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 is UiState.Error -> {
-                    Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFFEBEE)), modifier = Modifier.fillMaxWidth()) {
+                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer), modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(rs.message, color = Color.Red)
+                            Text(rs.message, color = MaterialTheme.colorScheme.onErrorContainer)
                             Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = { viewModel.loadRates() }, colors = ButtonDefaults.buttonColors(containerColor = PurpleAccent)) {
-                                Text("Retry")
+                            Button(onClick = { viewModel.loadRates() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+                                Text("Retry", color = MaterialTheme.colorScheme.onPrimary)
                             }
                         }
                     }
@@ -91,20 +87,20 @@ fun ZakatScreen(
 
                     Card(
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = PurpleAccentLight),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Live Rates (PKR)", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = PurpleAccent)
+                            Text("Live Rates (PKR)", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Gold: Rs ${pkrFormat.format(goldPricePerTola.toInt())} / tola", fontSize = 12.sp, color = TextDark)
-                            Text("Silver: Rs ${pkrFormat.format(silverPricePerTola.toInt())} / tola", fontSize = 12.sp, color = TextDark)
+                            Text("Gold: Rs ${pkrFormat.format(goldPricePerTola.toInt())} / tola", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                            Text("Silver: Rs ${pkrFormat.format(silverPricePerTola.toInt())} / tola", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
                         }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text("Enter Your Assets", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = TextDark)
+                    Text("Enter Your Assets", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
                     Spacer(modifier = Modifier.height(12.dp))
 
                     ZakatInputField("Cash & Bank Savings (PKR)", cash) { cash = it }
@@ -119,20 +115,20 @@ fun ZakatScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text("Nisab Basis", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextDark)
+                    Text("Nisab Basis", fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         FilterChip(
                             selected = nisabBasis == NisabBasis.SILVER,
                             onClick = { nisabBasis = NisabBasis.SILVER },
                             label = { Text("Silver (Precautionary)") },
-                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = PurpleAccent, selectedLabelColor = Color.White)
+                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primary, selectedLabelColor = MaterialTheme.colorScheme.onPrimary)
                         )
                         FilterChip(
                             selected = nisabBasis == NisabBasis.GOLD,
                             onClick = { nisabBasis = NisabBasis.GOLD },
                             label = { Text("Gold") },
-                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = PurpleAccent, selectedLabelColor = Color.White)
+                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primary, selectedLabelColor = MaterialTheme.colorScheme.onPrimary)
                         )
                     }
 
@@ -151,10 +147,10 @@ fun ZakatScreen(
                                 nisabBasis = nisabBasis
                             )
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = PurpleAccent),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Calculate Zakat")
+                        Text("Calculate Zakat", color = MaterialTheme.colorScheme.onPrimary)
                     }
 
                     result?.let { res ->
@@ -162,25 +158,25 @@ fun ZakatScreen(
                         Card(
                             shape = RoundedCornerShape(12.dp),
                             colors = CardDefaults.cardColors(
-                                containerColor = if (res.isZakatObligatory) PurpleAccentLight else Color.White
+                                containerColor = if (res.isZakatObligatory) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                             ),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(20.dp)) {
-                                Text("Total Zakatable Wealth", fontSize = 13.sp, color = Color.Gray)
-                                Text("Rs ${pkrFormat.format(res.totalWealth.toInt())}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TextDark)
+                                Text("Total Zakatable Wealth", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Rs ${pkrFormat.format(res.totalWealth.toInt())}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text("Nisab Threshold", fontSize = 13.sp, color = Color.Gray)
-                                Text("Rs ${pkrFormat.format(res.nisabThreshold.toInt())}", fontSize = 16.sp, color = TextDark)
+                                Text("Nisab Threshold", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Rs ${pkrFormat.format(res.nisabThreshold.toInt())}", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(modifier = Modifier.height(16.dp))
                                 if (res.isZakatObligatory) {
-                                    Text("Zakat Due (2.5%)", fontSize = 13.sp, color = PurpleAccent, fontWeight = FontWeight.SemiBold)
-                                    Text("Rs ${pkrFormat.format(res.zakatDue.toInt())}", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = PurpleAccent)
+                                    Text("Zakat Due (2.5%)", fontSize = 13.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                                    Text("Rs ${pkrFormat.format(res.zakatDue.toInt())}", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
                                 } else {
                                     Text(
                                         "Your wealth is below Nisab. Zakat is not obligatory this year.",
                                         fontSize = 14.sp,
-                                        color = Color(0xFF757575)
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                                     )
                                 }
                             }
@@ -202,13 +198,13 @@ fun ZakatInputField(label: String, value: String, onValueChange: (String) -> Uni
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = PurpleAccent,
-            unfocusedBorderColor = PurpleAccent.copy(alpha = 0.5f),
-            focusedLabelColor = PurpleAccent,
-            unfocusedLabelColor = PurpleAccent.copy(alpha = 0.7f),
-            cursorColor = PurpleAccent,
-            focusedTextColor = TextDark,
-            unfocusedTextColor = TextDark
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedTextColor = MaterialTheme.colorScheme.onBackground,
+            unfocusedTextColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }

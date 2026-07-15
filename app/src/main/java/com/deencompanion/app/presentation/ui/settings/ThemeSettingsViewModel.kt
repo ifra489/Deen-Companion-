@@ -1,6 +1,7 @@
 package com.deencompanion.app.presentation.ui.settings
 
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deencompanion.app.domain.repository.SettingsRepository
@@ -12,21 +13,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+class ThemeSettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     val isDarkTheme: StateFlow<Boolean> = settingsRepository.isDarkTheme
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
 
-    val defaultTranslationLanguage: StateFlow<String> = settingsRepository.defaultTranslationLanguage
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "en")
-
-    fun setDarkTheme(enabled: Boolean) {
-        viewModelScope.launch { settingsRepository.setDarkTheme(enabled) }
-    }
-
-    fun setDefaultTranslationLanguage(language: String) {
-        viewModelScope.launch { settingsRepository.setDefaultTranslationLanguage(language) }
+    fun toggleTheme(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setDarkTheme(enabled)
+        }
     }
 }

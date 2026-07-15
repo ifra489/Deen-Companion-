@@ -9,4 +9,6 @@ interface SettingsRepository {
     suspend fun setDarkTheme(enabled: Boolean)
     val defaultTranslationLanguage: Flow<String>
     suspend fun setDefaultTranslationLanguage(language: String)
+    val isAdhanEnabled: Flow<Boolean>
+    suspend fun setAdhanEnabled(enabled: Boolean)
 }

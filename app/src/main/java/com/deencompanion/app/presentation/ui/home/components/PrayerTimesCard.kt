@@ -32,143 +32,144 @@ fun PrayerTimesCard(
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        )
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFF4527A0),
-                            Color(0xFF6A1B9A)
-                        )
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            when (state) {
-                is UiState.Loading -> {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(vertical = 24.dp)
-                    ) {
-                        CircularProgressIndicator(color = Color.White)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Loading Prayer Times...",
-                            color = Color.White.copy(alpha = 0.8f),
-                            fontSize = 14.sp
-                        )
-                    }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Top accent bar (3dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(MaterialTheme.colorScheme.primary)
+            )
 
-                }
-                is UiState.Error -> {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(vertical = 16.dp)
-                    ) {
-                        Text(
-                            text = "Could not load",
-                            color = Color.White,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = onRetry,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = Color(0xFF2E7D32)
-                            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when (state) {
+                    is UiState.Loading -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(vertical = 24.dp)
                         ) {
-                            Text(text = "Retry", fontWeight = FontWeight.Bold)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Loading Prayer Times...",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 14.sp
+                            )
                         }
                     }
-                }
-                is UiState.Success -> {
-                    val prayerTimes = state.data
-                    val nextPrayerName = getNextPrayerName(prayerTimes)
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Next Prayer",
-                            color = Color.White.copy(alpha = 0.8f),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = nextPrayerName,
-                            color = Color.White,
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = countdown,
-                            color = Color.White,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                    is UiState.Error -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(vertical = 16.dp)
                         ) {
-                            val prayersList = listOf(
-                                "Fajr" to prayerTimes.fajr,
-                                "Dhuhr" to prayerTimes.dhuhr,
-                                "Asr" to prayerTimes.asr,
-                                "Maghrib" to prayerTimes.maghrib,
-                                "Isha" to prayerTimes.isha
+                            Text(
+                                text = "Could not load prayer times",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp,
+                                textAlign = TextAlign.Center
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(
+                                onClick = onRetry,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary
+                                )
+                            ) {
+                                Text(text = "Retry", fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                    is UiState.Success -> {
+                        val prayerTimes = state.data
+                        val nextPrayerName = getNextPrayerName(prayerTimes)
 
-                            prayersList.forEach { (name, time) ->
-                                val isNext = name == nextPrayerName
-                                val textColor = if (isNext) Color(0xFFF9A825) else Color.White
-                                val labelColor = if (isNext) Color(0xFFF9A825).copy(alpha = 0.8f) else Color.White.copy(alpha = 0.7f)
-                                val cleanTime = time.substringBefore(" ").trim()
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Next Prayer",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = nextPrayerName,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = countdown,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.height(20.dp))
 
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        text = name,
-                                        color = labelColor,
-                                        fontSize = 12.sp,
-                                        fontWeight = if (isNext) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = cleanTime,
-                                        color = textColor,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                val prayersList = listOf(
+                                    "Fajr" to prayerTimes.fajr,
+                                    "Dhuhr" to prayerTimes.dhuhr,
+                                    "Asr" to prayerTimes.asr,
+                                    "Maghrib" to prayerTimes.maghrib,
+                                    "Isha" to prayerTimes.isha
+                                )
+
+                                prayersList.forEach { (name, time) ->
+                                    val isNext = name == nextPrayerName
+                                    val goldColor = Color(0xFFC9A84C)
+                                    val textColor = if (isNext) goldColor else MaterialTheme.colorScheme.onSurface
+                                    val labelColor = if (isNext) goldColor.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
+                                    val cleanTime = time.substringBefore(" ").trim()
+
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(
+                                            text = name,
+                                            color = labelColor,
+                                            fontSize = 12.sp,
+                                            fontWeight = if (isNext) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = cleanTime,
+                                            color = textColor,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                else -> {
-                    // Empty or other states
-                    Text(
-                        text = "No prayer times available",
-                        color = Color.White,
-                        fontSize = 14.sp
-                    )
+                    else -> {
+                        Text(
+                            text = "No prayer times available",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             }
         }

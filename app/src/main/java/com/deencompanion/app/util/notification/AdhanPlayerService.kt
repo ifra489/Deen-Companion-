@@ -86,7 +86,7 @@ class AdhanPlayerService : Service() {
         NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Time for $prayerName")
             .setContentText("Adhan is playing...")
-            .setSmallIcon(R.drawable.ic_splash)
+            .setSmallIcon(R.drawable.app_icon)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)

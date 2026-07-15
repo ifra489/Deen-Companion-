@@ -25,10 +25,6 @@ import androidx.navigation.NavController
 import com.deencompanion.app.domain.model.Achievement
 import com.deencompanion.app.util.UiState
 
-private val PurpleAccent = Color(0xFF6A1B9A)
-private val PurpleAccentLight = Color(0xFFF3E5F5)
-private val TextDark = Color(0xFF212121)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AchievementsScreen(
@@ -40,26 +36,26 @@ fun AchievementsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Achievements", color = TextDark, fontWeight = FontWeight.Bold) },
+                title = { Text("Achievements", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = TextDark)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         when (val s = state) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = PurpleAccent)
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
             is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = Color.Red)
+                    Text(s.message, color = MaterialTheme.colorScheme.error)
                 }
             }
             is UiState.Empty -> {}
@@ -73,12 +69,12 @@ fun AchievementsScreen(
                     item {
                         Card(
                             shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = PurpleAccentLight),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("$unlockedCount / ${s.data.size}", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = PurpleAccent)
-                                Text("Achievements Unlocked", fontSize = 13.sp, color = TextDark)
+                                Text("$unlockedCount / ${s.data.size}", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
+                                Text("Achievements Unlocked", fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
                             }
                         }
                     }
@@ -97,7 +93,7 @@ fun AchievementCard(achievement: Achievement) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (achievement.isUnlocked) PurpleAccentLight else Color.White
+            containerColor = if (achievement.isUnlocked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -109,7 +105,7 @@ fun AchievementCard(achievement: Achievement) {
                 modifier = Modifier
                     .size(44.dp)
                     .background(
-                        if (achievement.isUnlocked) PurpleAccent else Color(0xFFE0E0E0),
+                        if (achievement.isUnlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
                         CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -117,7 +113,7 @@ fun AchievementCard(achievement: Achievement) {
                 Icon(
                     imageVector = if (achievement.isUnlocked) Icons.Default.EmojiEvents else Icons.Default.Lock,
                     contentDescription = null,
-                    tint = if (achievement.isUnlocked) Color.White else Color.Gray,
+                    tint = if (achievement.isUnlocked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -127,19 +123,19 @@ fun AchievementCard(achievement: Achievement) {
                     achievement.title,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp,
-                    color = if (achievement.isUnlocked) PurpleAccent else TextDark
+                    color = if (achievement.isUnlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
-                Text(achievement.description, fontSize = 12.sp, color = Color.Gray)
+                Text(achievement.description, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 if (!achievement.isUnlocked) {
                     Spacer(modifier = Modifier.height(6.dp))
                     LinearProgressIndicator(
                         progress = { achievement.progress },
                         modifier = Modifier.fillMaxWidth().height(6.dp),
-                        color = PurpleAccent,
-                        trackColor = Color(0xFFE0E0E0)
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.outlineVariant
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("${achievement.currentValue} / ${achievement.targetValue}", fontSize = 11.sp, color = Color.Gray)
+                    Text("${achievement.currentValue} / ${achievement.targetValue}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

@@ -13,6 +13,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,9 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.deencompanion.app.domain.model.AyahDetail
 import com.deencompanion.app.domain.model.Surah
 import com.deencompanion.app.domain.model.WordVerse
+import com.deencompanion.app.presentation.ui.bookmarks.BookmarksViewModel
 import com.deencompanion.app.util.UiState
 import kotlinx.coroutines.launch
 
@@ -43,10 +48,11 @@ fun QuranDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val bookmarksViewModel: BookmarksViewModel = hiltViewModel()
 
-    val appBackground = Color(0xFFF5F5F5)
-    val appGreenAccent = Color(0xFF4527A0)
-    val appTextPrimary = Color(0xFF212121)
+    val appBackground = MaterialTheme.colorScheme.background
+    val appGreenAccent = MaterialTheme.colorScheme.primary
+    val appTextPrimary = MaterialTheme.colorScheme.onBackground
 
     val currentSurah = remember(surahId) {
         Surah.ALL_SURAHS.find { it.number == surahId }
@@ -67,12 +73,12 @@ fun QuranDetailScreen(
                         Text(
                             text = currentSurah?.nameTransliteration ?: "Surah Details",
                             fontWeight = FontWeight.Bold,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 18.sp
                         )
                         Text(
                             text = currentSurah?.nameEnglish ?: "",
-                            color = Color.White.copy(alpha = 0.8f),
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                             fontSize = 12.sp
                         )
                     }
@@ -82,7 +88,7 @@ fun QuranDetailScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },
@@ -96,10 +102,10 @@ fun QuranDetailScreen(
                             onClick = { viewModel.toggleMode(false) },
                             shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
                             colors = SegmentedButtonDefaults.colors(
-                                activeContainerColor = Color.White,
+                                activeContainerColor = MaterialTheme.colorScheme.surface,
                                 activeContentColor = appGreenAccent,
                                 inactiveContainerColor = Color.Transparent,
-                                inactiveContentColor = Color.White
+                                inactiveContentColor = MaterialTheme.colorScheme.onPrimary
                             )
                         ) {
                             Text("Normal", fontSize = 11.sp)
@@ -109,10 +115,10 @@ fun QuranDetailScreen(
                             onClick = { viewModel.toggleMode(true) },
                             shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
                             colors = SegmentedButtonDefaults.colors(
-                                activeContainerColor = Color.White,
+                                activeContainerColor = MaterialTheme.colorScheme.surface,
                                 activeContentColor = appGreenAccent,
                                 inactiveContainerColor = Color.Transparent,
-                                inactiveContentColor = Color.White
+                                inactiveContentColor = MaterialTheme.colorScheme.onPrimary
                             )
                         ) {
                             Text("W-B-W", fontSize = 11.sp)
@@ -148,7 +154,7 @@ fun QuranDetailScreen(
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
@@ -160,7 +166,7 @@ fun QuranDetailScreen(
                             label = { Text("Ayat ${i + 1}") },
                             colors = AssistChipDefaults.assistChipColors(
                                 containerColor = if (isSelected) appGreenAccent else appBackground,
-                                labelColor = if (isSelected) Color.White else appTextPrimary
+                                labelColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else appTextPrimary
                             ),
                             border = null
                         )
@@ -173,7 +179,7 @@ fun QuranDetailScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White.copy(alpha = 0.5f))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
                     .padding(horizontal = 16.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -186,7 +192,7 @@ fun QuranDetailScreen(
                         label = { Text(label, fontSize = 12.sp) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = appGreenAccent,
-                            selectedLabelColor = Color.White
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
                 }
@@ -205,7 +211,7 @@ fun QuranDetailScreen(
                     }
                     is UiState.Error -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(state.message, color = Color.Red, textAlign = TextAlign.Center)
+                            Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
                         }
                     }
                     is UiState.Empty -> {
@@ -221,16 +227,35 @@ fun QuranDetailScreen(
                         ) {
                             itemsIndexed(state.data) { index, ayah ->
                                 val isHighlighted = index == uiState.selectedAyahIndex
+                                val isAyahPlaying = uiState.isAudioPlaying && uiState.currentAudioAyahIndex == index
+                                val isBookmarked by bookmarksViewModel
+                                    .isAyahBookmarked(surahId, ayah.numberInSurah)
+                                    .collectAsState(initial = false)
                                 NormalAyahCard(
                                     ayah = ayah,
+                                    surahId = surahId,
                                     index = index,
                                     selectedTranslation = uiState.selectedTranslation,
                                     isHighlighted = isHighlighted,
+                                    isAyahPlaying = isAyahPlaying,
                                     appGreenAccent = appGreenAccent,
                                     appTextPrimary = appTextPrimary,
+                                    isBookmarked = isBookmarked,
+                                    onBookmarkClick = {
+                                        bookmarksViewModel.toggleAyah(
+                                            surahId = surahId,
+                                            surahName = currentSurah?.nameTransliteration ?: "Surah $surahId",
+                                            ayahNumber = ayah.numberInSurah,
+                                            arabicSnippet = ayah.arabicText
+                                        )
+                                    },
                                     onPlayClick = {
-                                        if (index < uiState.audioAyahs.size) {
-                                            viewModel.playAyahAudio(uiState.audioAyahs[index].audio, index)
+                                        if (isAyahPlaying) {
+                                            viewModel.toggleAudioPlayPause()
+                                        } else {
+                                            if (index < uiState.audioAyahs.size) {
+                                                viewModel.playAyahAudio(uiState.audioAyahs[index].audio, index)
+                                            }
                                         }
                                     }
                                 )
@@ -248,7 +273,7 @@ fun QuranDetailScreen(
                     }
                     is UiState.Error -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(state.message, color = Color.Red, textAlign = TextAlign.Center)
+                            Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
                         }
                     }
                     is UiState.Empty -> {
@@ -282,17 +307,21 @@ fun QuranDetailScreen(
 @Composable
 fun NormalAyahCard(
     ayah: AyahDetail,
+    surahId: Int,
     index: Int,
     selectedTranslation: String,
     isHighlighted: Boolean,
+    isAyahPlaying: Boolean,
     appGreenAccent: Color,
     appTextPrimary: Color,
+    isBookmarked: Boolean,
+    onBookmarkClick: () -> Unit,
     onPlayClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isHighlighted) appGreenAccent.copy(alpha = 0.04f) else Color.White
+            containerColor = if (isHighlighted) appGreenAccent.copy(alpha = 0.04f) else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         border = if (isHighlighted) BorderStroke(1.dp, appGreenAccent.copy(alpha = 0.3f)) else null,
@@ -305,7 +334,7 @@ fun NormalAyahCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Header Row: Ayah Number Badge + Quick Play button
+            // Header Row: Ayah Number Badge + Bookmark + Quick Play button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -325,20 +354,36 @@ fun NormalAyahCard(
                     )
                 }
 
-                IconButton(onClick = onPlayClick) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Listen",
-                        tint = appGreenAccent
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onBookmarkClick) {
+                        Icon(
+                            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                            contentDescription = if (isBookmarked) "Remove bookmark" else "Bookmark this ayah",
+                            tint = appGreenAccent
+                        )
+                    }
+                    IconButton(onClick = onPlayClick) {
+                        Icon(
+                            imageVector = if (isAyahPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = if (isAyahPlaying) "Pause" else "Listen",
+                            tint = appGreenAccent
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             // Arabic Text
+            val bismillah = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+            val displayArabicText = if (ayah.numberInSurah == 1 && ayah.arabicText.startsWith(bismillah) && surahId != 1 && surahId != 9) {
+                ayah.arabicText.replaceFirst(bismillah, "$bismillah\n")
+            } else {
+                ayah.arabicText
+            }
+
             Text(
-                text = ayah.arabicText,
+                text = displayArabicText,
                 fontWeight = FontWeight.Bold,
                 color = appTextPrimary,
                 fontSize = 24.sp,
@@ -354,7 +399,7 @@ fun NormalAyahCard(
             val translationText = ayah.translations[selectedTranslation] ?: "Translation not available."
             Text(
                 text = translationText,
-                color = Color(0xFF424242),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 14.sp,
                 lineHeight = 22.sp,
                 textAlign = TextAlign.Start,
@@ -375,7 +420,7 @@ fun WordByWordCard(
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isHighlighted) appGreenAccent.copy(alpha = 0.04f) else Color.White
+            containerColor = if (isHighlighted) appGreenAccent.copy(alpha = 0.04f) else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         border = if (isHighlighted) BorderStroke(1.dp, appGreenAccent.copy(alpha = 0.3f)) else null,
@@ -410,7 +455,7 @@ fun WordByWordCard(
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(Color(0xFFFAFAFA))
+                                .background(MaterialTheme.colorScheme.background)
                                 .padding(8.dp)
                         ) {
                             Text(
@@ -423,7 +468,7 @@ fun WordByWordCard(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = word.translation,
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 10.sp,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.widthIn(max = 80.dp)
@@ -445,7 +490,7 @@ fun AudioPlayerBar(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp
     ) {
         Column(
@@ -466,13 +511,12 @@ fun AudioPlayerBar(
                 ) {
                     Icon(
                         imageVector = if (uiState.isAudioPlaying) {
-                            // Feel free to replace with standard Lucide/Painter icons as appropriate
-                            Icons.Default.PlayArrow
+                            Icons.Default.Pause
                         } else {
                             Icons.Default.PlayArrow
                         },
                         contentDescription = "Play/Pause",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
 
@@ -488,12 +532,12 @@ fun AudioPlayerBar(
                         },
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
-                        color = Color(0xFF212121)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = "Sheikh Mishary Al-Alafasy",
                         fontSize = 12.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -501,7 +545,7 @@ fun AudioPlayerBar(
                 Text(
                     text = "${formatTime(uiState.currentPositionMs)} / ${formatTime(uiState.currentDurationMs)}",
                     fontSize = 12.sp,
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -514,7 +558,7 @@ fun AudioPlayerBar(
                 colors = SliderDefaults.colors(
                     activeTrackColor = appGreenAccent,
                     thumbColor = appGreenAccent,
-                    inactiveTrackColor = Color.LightGray
+                    inactiveTrackColor = MaterialTheme.colorScheme.outline
                 ),
                 modifier = Modifier.fillMaxWidth()
             )

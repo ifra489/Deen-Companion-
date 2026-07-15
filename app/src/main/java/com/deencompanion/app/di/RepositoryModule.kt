@@ -1,3 +1,9 @@
+
+
+
+
+
+
 package com.deencompanion.app.di
 
 import com.deencompanion.app.data.repository.AuthRepositoryImpl
@@ -33,16 +39,14 @@ import com.deencompanion.app.data.repository.AchievementRepositoryImpl
 import com.deencompanion.app.domain.repository.AchievementRepository
 import com.deencompanion.app.data.repository.SettingsRepositoryImpl
 import com.deencompanion.app.domain.repository.SettingsRepository
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-
     @Binds
     @Singleton
     abstract fun bindZakatRepository(impl: ZakatRepositoryImpl): ZakatRepository
-
-
 
     @Binds
     @Singleton
@@ -51,26 +55,29 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAchievementRepository(impl: AchievementRepositoryImpl): AchievementRepository
+
     @Binds
     @Singleton
     abstract fun bindQazaNamazRepository(impl: QazaNamazRepositoryImpl): QazaNamazRepository
+
     @Binds
     @Singleton
     abstract fun bindHadithRepository(
         impl: HadithRepositoryImpl
     ): HadithRepository
+
     @Binds
     @Singleton
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
 
-
     @Binds
     @Singleton
     abstract fun bindAzkarRepository(
         impl: AzkarRepositoryImpl
     ): AzkarRepository
+
     @Binds
     @Singleton
     abstract fun bindQuranRepository(
@@ -82,17 +89,18 @@ abstract class RepositoryModule {
     abstract fun bindHomeRepository(
         homeRepositoryImpl: HomeRepositoryImpl
     ): HomeRepository
+
     @Binds
     @Singleton
     abstract fun bindTasbeehRepository(
         impl: TasbeehRepositoryImpl
     ): TasbeehRepository
+
     @Binds
     @Singleton
     abstract fun bindPrayerTrackingRepository(
         impl: PrayerTrackingRepositoryImpl
     ): PrayerTrackingRepository
-
 
     @Binds
     @Singleton
@@ -101,9 +109,14 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindGoalRepository(impl: GoalRepositoryImpl): GoalRepository
+
     @Binds
     @Singleton
     abstract fun bindDuaRepository(
         impl: DuaRepositoryImpl
     ): DuaRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBookmarkRepository(impl: com.deencompanion.app.data.repository.BookmarkRepositoryImpl): com.deencompanion.app.domain.repository.BookmarkRepository
 }

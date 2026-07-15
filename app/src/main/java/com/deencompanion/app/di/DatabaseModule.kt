@@ -1,3 +1,8 @@
+
+
+
+
+
 package com.deencompanion.app.di
 
 import com.deencompanion.app.data.local.database.AppDatabase
@@ -19,6 +24,8 @@ import com.google.gson.GsonBuilder
 import com.deencompanion.app.data.local.dao.HabitDao
 import com.deencompanion.app.data.local.dao.GoalDao
 import com.deencompanion.app.data.local.dao.QazaNamazDao
+import com.deencompanion.app.data.local.dao.BookmarkDao
+
 /**
  * LEARNING NOTE:
  * This module provides the Room database instance and its DAOs.
@@ -27,7 +34,6 @@ import com.deencompanion.app.data.local.dao.QazaNamazDao
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
 
     @Provides
     @Singleton
@@ -40,6 +46,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideGoalDao(database: AppDatabase): GoalDao = database.goalDao()
+
     @Provides
     @Singleton
     fun provideQuranCacheDao(database: AppDatabase): QuranCacheDao {
@@ -51,6 +58,7 @@ object DatabaseModule {
     fun provideGson(): Gson {
         return GsonBuilder().setLenient().create()
     }
+
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
@@ -66,9 +74,14 @@ object DatabaseModule {
     fun providePrayerRecordDao(appDatabase: AppDatabase): PrayerRecordDao {
         return appDatabase.prayerRecordDao()
     }
+
     @Provides
     @Singleton
     fun provideTasbeehDao(appDatabase: AppDatabase): TasbeehDao {
         return appDatabase.tasbeehDao()
     }
+
+    @Provides
+    @Singleton
+    fun provideBookmarkDao(database: AppDatabase): com.deencompanion.app.data.local.dao.BookmarkDao = database.bookmarkDao()
 }

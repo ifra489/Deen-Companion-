@@ -30,17 +30,17 @@ fun DailyAyahCard(
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Green top accent bar (4dp)
+            // Top accent bar (4dp)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
-                    .background(Color(0xFF2E7D32))
+                    .background(MaterialTheme.colorScheme.primary)
             )
 
             Column(
@@ -58,13 +58,13 @@ fun DailyAyahCard(
                         Icon(
                             imageVector = Icons.Rounded.MenuBook,
                             contentDescription = "Quran Icon",
-                            tint = Color(0xFF2E7D32),
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Daily Ayah",
-                            color = Color(0xFF212121),
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -73,7 +73,7 @@ fun DailyAyahCard(
                     Icon(
                         imageVector = Icons.Rounded.Refresh,
                         contentDescription = "Refresh Icon",
-                        tint = Color(0xFF2E7D32),
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(24.dp)
                             .clickable { onRefresh() }
@@ -90,7 +90,7 @@ fun DailyAyahCard(
                                 .height(120.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(color = Color(0xFF2E7D32))
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     }
                     is UiState.Error -> {
@@ -102,12 +102,12 @@ fun DailyAyahCard(
                         ) {
                             Text(
                                 text = "Could not load ayah",
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 14.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             TextButton(onClick = onRefresh) {
-                                Text(text = "Retry", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold)
+                                Text(text = "Retry", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -116,7 +116,7 @@ fun DailyAyahCard(
                         // Arabic text (RTL, 20sp, center, bold)
                         Text(
                             text = ayah.arabicText,
-                            color = Color(0xFF212121),
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
@@ -125,14 +125,14 @@ fun DailyAyahCard(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
 
                         Spacer(modifier = Modifier.height(12.dp))
 
                         // English translation (14sp, gray)
                         Text(
                             text = ayah.translation,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
@@ -143,7 +143,7 @@ fun DailyAyahCard(
                         // Surah name + Ayah number (small, green, bottom)
                         Text(
                             text = "${ayah.surahName} : ${ayah.ayahNumber}",
-                            color = Color(0xFF2E7D32),
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.End,
@@ -153,7 +153,7 @@ fun DailyAyahCard(
                     else -> {
                         Text(
                             text = "No Ayah available",
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 14.sp,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )

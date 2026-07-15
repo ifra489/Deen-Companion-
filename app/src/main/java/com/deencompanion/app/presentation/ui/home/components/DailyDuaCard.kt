@@ -28,17 +28,17 @@ fun DailyDuaCard(dua: DailyDua?) {
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // Teal top accent bar (4dp)
+            // Top accent bar (4dp)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
-                    .background(Color(0xFF008080)) // Teal color #008080
+                    .background(MaterialTheme.colorScheme.primary)
             )
 
             Column(
@@ -54,13 +54,13 @@ fun DailyDuaCard(dua: DailyDua?) {
                     Icon(
                         imageVector = Icons.Rounded.VolunteerActivism, // Praying/Hands-like representation
                         contentDescription = "Dua Icon",
-                        tint = Color(0xFF008080),
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Daily Dua",
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -74,7 +74,7 @@ fun DailyDuaCard(dua: DailyDua?) {
                     // Arabic text (RTL, 18sp, center)
                     Text(
                         text = dua.arabicText,
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -86,7 +86,7 @@ fun DailyDuaCard(dua: DailyDua?) {
                     // Transliteration (italic, gray, 13sp)
                     Text(
                         text = dua.transliteration,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 13.sp,
                         fontStyle = FontStyle.Italic,
                         textAlign = TextAlign.Center,
@@ -95,14 +95,14 @@ fun DailyDuaCard(dua: DailyDua?) {
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // English translation (14sp, dark)
                     Text(
                         text = dua.translation,
-                        color = Color(0xFF212121),
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -113,7 +113,7 @@ fun DailyDuaCard(dua: DailyDua?) {
                     // Reference (12sp, gray, bottom)
                     Text(
                         text = dua.reference,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.End,
@@ -145,7 +145,7 @@ fun ShimmerDuaPlaceholder() {
                 .height(18.dp)
                 .align(Alignment.CenterHorizontally)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
         Spacer(modifier = Modifier.height(6.dp))
         Box(
@@ -154,14 +154,14 @@ fun ShimmerDuaPlaceholder() {
                 .height(12.dp)
                 .align(Alignment.CenterHorizontally)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
         Spacer(modifier = Modifier.height(16.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(Color.LightGray.copy(alpha = 0.3f))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
         )
         Spacer(modifier = Modifier.height(16.dp))
         Box(
@@ -169,7 +169,7 @@ fun ShimmerDuaPlaceholder() {
                 .fillMaxWidth(0.9f)
                 .height(14.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
     }
-}
+}

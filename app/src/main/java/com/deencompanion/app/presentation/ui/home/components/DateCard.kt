@@ -34,7 +34,7 @@ fun DateCard(state: UiState<HijriDate>) {
             .padding(vertical = 4.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -52,7 +52,7 @@ fun DateCard(state: UiState<HijriDate>) {
             ) {
                 Text(
                     text = dayOfWeek,
-                    color = Color(0xFF7B1FA2) ,// Green theme color
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
@@ -60,7 +60,7 @@ fun DateCard(state: UiState<HijriDate>) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = formattedGregorianDate,
-                    color = Color(0xFF212121), // Dark text
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     textAlign = TextAlign.Center
@@ -72,7 +72,7 @@ fun DateCard(state: UiState<HijriDate>) {
                 modifier = Modifier
                     .height(60.dp)
                     .width(1.dp),
-                color = Color.LightGray.copy(alpha = 0.5f)
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
 
             // Right Column: Hijri Date
@@ -88,7 +88,7 @@ fun DateCard(state: UiState<HijriDate>) {
                         val hijri = state.data
                         Text(
                             text = "${hijri.hijriDay} ${hijri.hijriMonth}",
-                            color = Color(0xFF7B1FA2), // Green theme color
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
@@ -96,7 +96,7 @@ fun DateCard(state: UiState<HijriDate>) {
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             text = "${hijri.hijriYear} AH",
-                            color = Color(0xFF212121), // Dark text
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center
@@ -105,7 +105,7 @@ fun DateCard(state: UiState<HijriDate>) {
 
                         Text(
                             text = hijri.hijriMonthArabic,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                             textAlign = TextAlign.Center
                         )
@@ -113,7 +113,7 @@ fun DateCard(state: UiState<HijriDate>) {
                     is UiState.Error -> {
                         Text(
                             text = "Error loading",
-                            color = Color.Red,
+                            color = MaterialTheme.colorScheme.error,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center
@@ -122,7 +122,7 @@ fun DateCard(state: UiState<HijriDate>) {
                     else -> {
                         Text(
                             text = "-- --",
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center
                         )
@@ -155,7 +155,7 @@ fun ShimmerDatePlaceholder() {
                 .width(100.dp)
                 .height(20.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
         Spacer(modifier = Modifier.height(6.dp))
         Box(
@@ -163,7 +163,7 @@ fun ShimmerDatePlaceholder() {
                 .width(70.dp)
                 .height(14.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color.LightGray.copy(alpha = alpha))
+                .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
         )
     }
-}
+}
