@@ -31,6 +31,17 @@ class QuranRepositoryImpl @Inject constructor(
 
     override suspend fun getSurahEditions(surahNumber: Int): Result<List<AyahDetail>> {
         val cacheType = "editions"
+        
+        // Always try to load from cache first for immediate response
+        val cached = quranCacheDao.getCachedData(surahNumber, cacheType)
+        if (cached != null) {
+            val type = object : TypeToken<List<AyahDetail>>() {}.type
+            val cachedData = gson.fromJson<List<AyahDetail>>(cached.jsonData, type)
+            if (cachedData.isNotEmpty()) {
+                return Result.success(cachedData)
+            }
+        }
+
         return try {
             val response = quranApi.getSurahEditions(surahNumber)
             if (response.isSuccessful && response.body() != null) {
@@ -68,6 +79,17 @@ class QuranRepositoryImpl @Inject constructor(
 
     override suspend fun getSurahAudio(surahNumber: Int): Result<List<AudioAyahItem>> {
         val cacheType = "audio"
+        
+        // Try cache first
+        val cached = quranCacheDao.getCachedData(surahNumber, cacheType)
+        if (cached != null) {
+            val type = object : TypeToken<List<AudioAyahItem>>() {}.type
+            val cachedData = gson.fromJson<List<AudioAyahItem>>(cached.jsonData, type)
+            if (cachedData.isNotEmpty()) {
+                return Result.success(cachedData)
+            }
+        }
+
         return try {
             val response = quranApi.getSurahAudio(surahNumber)
             if (response.isSuccessful && response.body() != null) {
@@ -95,6 +117,16 @@ class QuranRepositoryImpl @Inject constructor(
     override suspend fun getSurahWordByWord(surahNumber: Int, languageCode: String): Result<List<WordVerse>> {
         val apiLang = if (languageCode.lowercase() == "ur") "ur" else "en" // Hindi API support nahi, English fallback
         val cacheType = "wordbyword_${languageCode.lowercase()}"
+
+        // Try cache first
+        val cached = quranCacheDao.getCachedData(surahNumber, cacheType)
+        if (cached != null) {
+            val type = object : TypeToken<List<WordVerse>>() {}.type
+            val cachedData = gson.fromJson<List<WordVerse>>(cached.jsonData, type)
+            if (cachedData.isNotEmpty()) {
+                return Result.success(cachedData)
+            }
+        }
 
         return try {
             val response = quranWordApi.getWordByWordVerses(chapterNumber = surahNumber, language = apiLang)

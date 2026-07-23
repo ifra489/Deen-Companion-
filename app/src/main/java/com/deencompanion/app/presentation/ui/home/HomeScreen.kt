@@ -7,9 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.deencompanion.app.presentation.ui.home.components.*
@@ -94,19 +92,14 @@ fun HomeScreen(
                 )
             }
 
-            // Date and Adhan Toggle
+            // Date Card
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        DateCard(state = hijriDateState)
-                    }
-                    Box(modifier = Modifier.weight(0.4f)) {
-                        AdhanToggleSetting()
-                    }
-                }
+                DateCard(state = hijriDateState)
+            }
+
+            // Adhan Toggle Card (Moved below DateCard to avoid horizontal squeezing)
+            item {
+                AdhanToggleSetting()
             }
 
             // Daily Ayah

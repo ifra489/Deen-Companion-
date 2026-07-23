@@ -131,14 +131,15 @@ fun PrayerScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(120.dp),
+                                .height(140.dp), // Increased height to accommodate labels better
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.Bottom
                         ) {
                             weeklyProgress.forEach { progress ->
                                 Column(
                                     horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.Bottom
                                 ) {
                                     val barHeight = (progress.completedCount * 18 + 8).dp
                                     Box(
@@ -151,14 +152,16 @@ fun PrayerScreen(
                                                 else MaterialTheme.colorScheme.outlineVariant
                                             )
                                     )
-                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Spacer(modifier = Modifier.height(8.dp))
                                     Text(
                                         text = progress.date.dayOfWeek.getDisplayName(
                                             java.time.format.TextStyle.SHORT,
                                             Locale.getDefault()
                                         ),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 1,
+                                        softWrap = false
                                     )
                                 }
                             }

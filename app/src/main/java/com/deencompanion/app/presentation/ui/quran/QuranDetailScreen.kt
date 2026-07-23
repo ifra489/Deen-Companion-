@@ -190,11 +190,29 @@ fun QuranDetailScreen(
                     }
                     is UiState.Error -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Button(onClick = { viewModel.loadSurahData() }) {
-                                    Text("Retry")
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(24.dp)
+                            ) {
+                                Text(
+                                    text = "This Surah is not available offline.",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Please connect to the internet to download it.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Button(
+                                    onClick = { viewModel.loadSurahData() },
+                                    shape = MaterialTheme.shapes.large
+                                ) {
+                                    Text("Retry Connection")
                                 }
                             }
                         }
@@ -251,11 +269,29 @@ fun QuranDetailScreen(
                     }
                     is UiState.Error -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Button(onClick = { viewModel.loadWordByWordData() }) {
-                                    Text("Retry")
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(24.dp)
+                            ) {
+                                Text(
+                                    text = "Word-by-word data unavailable.",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Connect to the internet to load this mode.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Button(
+                                    onClick = { viewModel.loadWordByWordData() },
+                                    shape = MaterialTheme.shapes.large
+                                ) {
+                                    Text("Retry Connection")
                                 }
                             }
                         }
