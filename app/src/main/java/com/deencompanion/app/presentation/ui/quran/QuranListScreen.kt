@@ -1,14 +1,14 @@
 package com.deencompanion.app.presentation.ui.quran
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.CloudDownload
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,11 +29,9 @@ fun QuranListScreen(
     modifier: Modifier = Modifier
 ) {
     val surahState by viewModel.surahListState.collectAsState()
+    val downloadProgress by viewModel.downloadProgress.collectAsState()
+    val downloadedSurahNumbers by viewModel.downloadedSurahNumbers.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
-
-    val appBackground = MaterialTheme.colorScheme.background
-    val appGreenAccent = MaterialTheme.colorScheme.primary
-    val appTextPrimary = MaterialTheme.colorScheme.onBackground
 
     Scaffold(
         topBar = {
@@ -41,16 +39,33 @@ fun QuranListScreen(
                 title = {
                     Text(
                         text = "Holy Quran",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        style = MaterialTheme.typography.displayLarge
                     )
                 },
+                actions = {
+                    if (downloadProgress == null) {
+                        IconButton(onClick = { viewModel.downloadAllSurahs() }) {
+                            Icon(
+                                imageVector = Icons.Rounded.CloudDownload,
+                                contentDescription = "Download All",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    } else {
+                        CircularProgressIndicator(
+                            progress = { downloadProgress ?: 0f },
+                            modifier = Modifier.size(24.dp).padding(4.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            strokeWidth = 2.dp
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = appGreenAccent
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
-        containerColor = appBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { innerPadding ->
         Column(
@@ -58,7 +73,6 @@ fun QuranListScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -66,39 +80,49 @@ fun QuranListScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 placeholder = { Text("Search Surah...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = appGreenAccent) },
+                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = MaterialTheme.shapes.large,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = appGreenAccent,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
                 )
             )
 
-            // Content matching State
+            if (downloadProgress != null) {
+                LinearProgressIndicator(
+                    progress = { downloadProgress ?: 0f },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.outlineVariant
+                )
+                Text(
+                    text = "Downloading Quran for offline use... ${( (downloadProgress ?: 0f) * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(16.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
             when (val state = surahState) {
                 is UiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = appGreenAccent)
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 is UiState.Error -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(
-                                onClick = { viewModel.loadSurahs() },
-                                colors = ButtonDefaults.buttonColors(containerColor = appGreenAccent)
-                            ) {
-                                Text("Retry")
-                            }
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(state.message, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = { viewModel.loadSurahs() }) {
+                            Text("Retry")
                         }
-                    }
-                }
-                is UiState.Empty -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No Surahs available.", color = appTextPrimary)
                     }
                 }
                 is UiState.Success -> {
@@ -109,19 +133,21 @@ fun QuranListScreen(
                     }
 
                     LazyColumn(
-                        contentPadding = PaddingValues(bottom = 16.dp),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(filteredSurahs, key = { it.number }) { surah ->
+                            val isDownloaded = downloadedSurahNumbers.contains(surah.number)
                              SurahCardItem(
                                 surah = surah,
-                                appGreenAccent = appGreenAccent,
-                                appTextPrimary = appTextPrimary,
+                                isDownloaded = isDownloaded,
                                 onSurahClick = onSurahClick
                             )
                         }
                     }
                 }
+                else -> {}
             }
         }
     }
@@ -130,63 +156,64 @@ fun QuranListScreen(
 @Composable
 fun SurahCardItem(
     surah: Surah,
-    appGreenAccent: Color,
-    appTextPrimary: Color,
+    isDownloaded: Boolean,
     onSurahClick: (Int) -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable { onSurahClick(surah.number) }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Surah Number inside circular badge
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(40.dp)
-                    .background(appGreenAccent.copy(alpha = 0.12f), shape = RoundedCornerShape(20.dp))
+                    .size(48.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), shape = MaterialTheme.shapes.medium)
             ) {
-                Text(
-                    text = surah.number.toString(),
-                    fontWeight = FontWeight.Bold,
-                    color = appGreenAccent,
-                    fontSize = 14.sp
-                )
+                if (isDownloaded) {
+                    Icon(
+                        imageVector = Icons.Rounded.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(28.dp)
+                    )
+                } else {
+                    Text(
+                        text = surah.number.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Surah English Name and Verse Counts
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = surah.nameTransliteration,
-                    fontWeight = FontWeight.Bold,
-                    color = appTextPrimary,
-                    fontSize = 16.sp
+                    style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
                     text = "${surah.nameEnglish} • ${surah.revelationType} • ${surah.versesCount} Ayahs",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 12.sp
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            // Arabic Surah Name on the right
             Text(
                 text = surah.nameArabic,
-                fontWeight = FontWeight.Bold,
-                color = appGreenAccent,
-                fontSize = 20.sp,
+                style = MaterialTheme.typography.displayLarge.copy(fontSize = 24.sp),
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.End
             )
         }

@@ -20,7 +20,9 @@ import javax.inject.Inject
 class PrayerViewModel @Inject constructor(
     private val markPrayerStatusUseCase: MarkPrayerStatusUseCase,
     private val getTodayPrayerStatusUseCase: GetTodayPrayerStatusUseCase,
-    private val getPrayerHistoryUseCase: GetPrayerHistoryUseCase
+    private val getPrayerHistoryUseCase: GetPrayerHistoryUseCase,
+    private val getCurrentStreakUseCase: com.deencompanion.app.domain.usecase.prayer.GetCurrentStreakUseCase,
+    private val getWeeklyProgressUseCase: com.deencompanion.app.domain.usecase.prayer.GetWeeklyProgressUseCase
 ) : ViewModel() {
 
     private val _todayPrayerStatus = MutableStateFlow<List<PrayerRecord>>(emptyList())
@@ -29,6 +31,12 @@ class PrayerViewModel @Inject constructor(
     private val _prayerHistory = MutableStateFlow<List<PrayerRecord>>(emptyList())
     val prayerHistory: StateFlow<List<PrayerRecord>> = _prayerHistory.asStateFlow()
 
+    private val _currentStreak = MutableStateFlow(0)
+    val currentStreak: StateFlow<Int> = _currentStreak.asStateFlow()
+
+    private val _weeklyProgress = MutableStateFlow<List<com.deencompanion.app.domain.model.DailyProgress>>(emptyList())
+    val weeklyProgress: StateFlow<List<com.deencompanion.app.domain.model.DailyProgress>> = _weeklyProgress.asStateFlow()
+
     init {
         val todayStr = LocalDate.now().toString()
         viewModelScope.launch {
@@ -36,12 +44,28 @@ class PrayerViewModel @Inject constructor(
                 _todayPrayerStatus.value = list
             }
         }
+        loadStreak()
+        loadWeeklyProgress()
+    }
+
+    fun loadStreak() {
+        viewModelScope.launch {
+            _currentStreak.value = getCurrentStreakUseCase()
+        }
+    }
+
+    fun loadWeeklyProgress() {
+        viewModelScope.launch {
+            _weeklyProgress.value = getWeeklyProgressUseCase()
+        }
     }
 
     fun togglePrayerStatus(prayerName: String, isPrayed: Boolean) {
         val todayStr = LocalDate.now().toString()
         viewModelScope.launch(Dispatchers.IO) {
             markPrayerStatusUseCase(todayStr, prayerName, isPrayed)
+            loadStreak()
+            loadWeeklyProgress()
         }
     }
 

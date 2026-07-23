@@ -1,16 +1,13 @@
 package com.deencompanion.app.presentation.ui.goals
 
-
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,52 +37,72 @@ fun GoalsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Goals", color = Color(0xFF212121), fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "My Goals", 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF212121))
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { title = ""; target = ""; showAddDialog = true }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Goal", tint = Color(0xFF141C48))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
-            )
-        },
-        containerColor = Color(0xFFF5F5F5)
-    ) { padding ->
-        when (val s = state) {
-            is UiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF141C48))
-                }
-            }
-            is UiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = Color.Red)
-                }
-            }
-            is UiState.Empty -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text("No goals yet. Tap + to add one.", color = Color.Gray)
-                }
-            }
-            is UiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(padding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(s.data, key = { it.id }) { goal ->
-                        GoalCard(
-                            goal = goal,
-                            onIncrement = { viewModel.incrementProgress(goal) },
-                            onDelete = { showDeleteDialog = goal }
+                        Icon(
+                            imageVector = Icons.Rounded.Add, 
+                            contentDescription = "Add Goal", 
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            when (val s = state) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
                 }
+                is UiState.Error -> {
+                    Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+                        Text(s.message, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
+                    }
+                }
+                is UiState.Empty -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No goals set yet.", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+                is UiState.Success -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(s.data, key = { it.id }) { goal ->
+                            GoalCard(
+                                goal = goal,
+                                onIncrement = { viewModel.incrementProgress(goal) },
+                                onDelete = { showDeleteDialog = goal }
+                            )
+                        }
+                    }
+                }
+                else -> {}
             }
         }
     }
@@ -95,20 +112,21 @@ fun GoalsScreen(
             onDismissRequest = { showAddDialog = false },
             title = { Text("Add New Goal") },
             text = {
-                Column {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedTextField(
                         value = title,
                         onValueChange = { title = it },
-                        placeholder = { Text("e.g. Complete Quran this month") },
-                        singleLine = true
+                        placeholder = { Text("e.g. Complete Quran") },
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = target,
                         onValueChange = { target = it },
-                        placeholder = { Text("Target (e.g. 30 days, 30 juz)") },
+                        placeholder = { Text("Target value (number)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium
                     )
                 }
             },
@@ -118,8 +136,7 @@ fun GoalsScreen(
                         val targetNum = target.toIntOrNull() ?: 0
                         viewModel.addGoal(title, targetNum)
                         showAddDialog = false
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141C48))
+                    }
                 ) { Text("Add") }
             },
             dismissButton = {
@@ -153,43 +170,64 @@ fun GoalCard(goal: Goal, onIncrement: () -> Unit, onDelete: () -> Unit) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(goal.title, fontWeight = FontWeight.SemiBold, color = Color(0xFF212121), fontSize = 15.sp, modifier = Modifier.weight(1f))
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Gray, modifier = Modifier.size(18.dp))
+                Text(
+                    text = goal.title, 
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
+                    Icon(imageVector = Icons.Rounded.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            
+            Spacer(modifier = Modifier.height(20.dp))
+            
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().height(8.dp),
-                color = Color(0xFF141C48),
-                trackColor = Color(0xFFE0E0E0)
+                modifier = Modifier.fillMaxWidth().height(10.dp),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.outlineVariant,
+                strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("${goal.progressCurrent} / ${goal.progressTarget}", fontSize = 13.sp, color = Color.Gray)
+                Text(
+                    text = "${goal.progressCurrent} / ${goal.progressTarget}", 
+                    style = MaterialTheme.typography.bodySmall, 
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Bold
+                )
                 if (!isComplete) {
                     Button(
                         onClick = onIncrement,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0B218C)),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp)
-                    ) { Text("+1", fontSize = 12.sp) }
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        modifier = Modifier.height(36.dp)
+                    ) { 
+                        Text("+1", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold) 
+                    }
                 } else {
-                    Text("🎉 Completed", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0B218C))
+                    Text(
+                        text = "🎉 Completed", 
+                        style = MaterialTheme.typography.bodySmall, 
+                        fontWeight = FontWeight.Bold, 
+                        color = Color(0xFF22C55E)
+                    )
                 }
             }
         }

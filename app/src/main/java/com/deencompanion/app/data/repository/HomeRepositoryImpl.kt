@@ -1,6 +1,12 @@
 package com.deencompanion.app.data.repository
 
 import android.content.Context
+import com.batoulapps.adhan.CalculationMethod
+import com.batoulapps.adhan.Coordinates
+import com.batoulapps.adhan.data.DateComponents
+import com.batoulapps.adhan.PrayerTimes as AdhanPrayerTimes
+import com.deencompanion.app.data.local.dao.OfflineCacheDao
+import com.deencompanion.app.data.local.entity.OfflineCacheEntity
 import com.deencompanion.app.data.remote.api.AladhanApi
 import com.deencompanion.app.data.remote.api.QuranApi
 import com.deencompanion.app.domain.model.Ayah
@@ -28,7 +34,8 @@ import kotlinx.coroutines.withContext
 @Singleton
 class HomeRepositoryImpl @Inject constructor(
     private val aladhanApi: AladhanApi,
-    private val quranApi: QuranApi
+    private val quranApi: QuranApi,
+    private val offlineCacheDao: OfflineCacheDao
 ) : HomeRepository {
 
     private val gson = Gson()
@@ -36,22 +43,26 @@ class HomeRepositoryImpl @Inject constructor(
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     private val gregorianDisplayFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
 
-    override suspend fun getPrayerTimes(city: String, country: String): UiState<PrayerTimes> =
+    override suspend fun getPrayerTimes(latitude: Double, longitude: Double): UiState<PrayerTimes> =
         withContext(Dispatchers.IO) {
+            val cacheKey = "prayer_times"
             try {
-                val response = aladhanApi.getPrayerTimes(city = city, country = country)
-                if (!response.isSuccessful) {
-                    return@withContext UiState.Error("Failed to load prayer times")
-                }
+                val coordinates = Coordinates(latitude, longitude)
+                val calendar = Calendar.getInstance()
+                val dateComponents = DateComponents(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                )
 
-                val timings = response.body()?.data?.timings
-                    ?: return@withContext UiState.Error("Failed to load prayer times")
+                val params = CalculationMethod.MUSLIM_WORLD_LEAGUE.parameters
+                val adhanTimes = AdhanPrayerTimes(coordinates, dateComponents, params)
 
-                val fajr = cleanTime(timings.fajr)
-                val dhuhr = cleanTime(timings.dhuhr)
-                val asr = cleanTime(timings.asr)
-                val maghrib = cleanTime(timings.maghrib)
-                val isha = cleanTime(timings.isha)
+                val fajr = formatAdhanTime(adhanTimes.fajr)
+                val dhuhr = formatAdhanTime(adhanTimes.dhuhr)
+                val asr = formatAdhanTime(adhanTimes.asr)
+                val maghrib = formatAdhanTime(adhanTimes.maghrib)
+                val isha = formatAdhanTime(adhanTimes.isha)
 
                 val (nextPrayerName, nextPrayerTime) = calculateNextPrayer(
                     fajr = fajr,
@@ -61,23 +72,41 @@ class HomeRepositoryImpl @Inject constructor(
                     isha = isha
                 )
 
-                UiState.Success(
-                    PrayerTimes(
-                        fajr = fajr,
-                        dhuhr = dhuhr,
-                        asr = asr,
-                        maghrib = maghrib,
-                        isha = isha,
-                        nextPrayerName = nextPrayerName,
-                        nextPrayerTime = nextPrayerTime
-                    )
+                val prayerTimes = PrayerTimes(
+                    fajr = fajr,
+                    dhuhr = dhuhr,
+                    asr = asr,
+                    maghrib = maghrib,
+                    isha = isha,
+                    nextPrayerName = nextPrayerName,
+                    nextPrayerTime = nextPrayerTime
                 )
+
+                // Cache prayer times
+                offlineCacheDao.insertOrUpdate(OfflineCacheEntity(cacheKey, gson.toJson(prayerTimes)))
+
+                UiState.Success(prayerTimes)
             } catch (e: Exception) {
-                UiState.Error(e.message ?: "Failed to load prayer times")
+                // Try to load from cache
+                val cached = offlineCacheDao.getCachedData(cacheKey)
+                if (cached != null) {
+                    UiState.Success(gson.fromJson(cached.jsonData, PrayerTimes::class.java))
+                } else {
+                    UiState.Error(e.message ?: "Failed to calculate prayer times")
+                }
             }
         }
 
+    private fun formatAdhanTime(date: java.util.Date): String {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        val hours = calendar.get(Calendar.HOUR_OF_DAY)
+        val minutes = calendar.get(Calendar.MINUTE)
+        return String.format(Locale.US, "%02d:%02d", hours, minutes)
+    }
+
     override suspend fun getHijriDate(): UiState<HijriDate> = withContext(Dispatchers.IO) {
+        val cacheKey = "hijri_date"
         try {
             val today = LocalDate.now().format(apiDateFormatter)
             val response = aladhanApi.getHijriDate(date = today)
@@ -86,25 +115,36 @@ class HomeRepositoryImpl @Inject constructor(
                 val data = response.body()?.data
                 val hijri = data?.hijri
                 if (hijri != null) {
-                    return@withContext UiState.Success(
-                        HijriDate(
-                            hijriDay = hijri.day,
-                            hijriMonth = hijri.month?.en.orEmpty(),
-                            hijriMonthArabic = hijri.month?.ar.orEmpty(),
-                            hijriYear = hijri.year,
-                            gregorianFormatted = formatGregorianDate(
-                                weekday = data.gregorian?.weekday?.en.orEmpty(),
-                                date = data.gregorian?.date.orEmpty()
-                            )
+                    val hijriDate = HijriDate(
+                        hijriDay = hijri.day,
+                        hijriMonth = hijri.month?.en.orEmpty(),
+                        hijriMonthArabic = hijri.month?.ar.orEmpty(),
+                        hijriYear = hijri.year,
+                        gregorianFormatted = formatGregorianDate(
+                            weekday = data.gregorian?.weekday?.en.orEmpty(),
+                            date = data.gregorian?.date.orEmpty()
                         )
                     )
+                    // Cache hijri date
+                    offlineCacheDao.insertOrUpdate(OfflineCacheEntity(cacheKey, gson.toJson(hijriDate)))
+                    return@withContext UiState.Success(hijriDate)
                 }
             }
             
-            // Fallback to local calculation if API fails
-            getHijriDateLocal()
+            // Try to load from cache first before local calculation
+            val cached = offlineCacheDao.getCachedData(cacheKey)
+            if (cached != null) {
+                UiState.Success(gson.fromJson(cached.jsonData, HijriDate::class.java))
+            } else {
+                getHijriDateLocal()
+            }
         } catch (e: Exception) {
-            getHijriDateLocal()
+            val cached = offlineCacheDao.getCachedData(cacheKey)
+            if (cached != null) {
+                UiState.Success(gson.fromJson(cached.jsonData, HijriDate::class.java))
+            } else {
+                getHijriDateLocal()
+            }
         }
     }
 
@@ -141,35 +181,64 @@ class HomeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getDailyAyah(): UiState<Ayah> = withContext(Dispatchers.IO) {
+        val cacheKey = "daily_ayah"
         try {
             val response = quranApi.getRandomAyah()
 
-            if (!response.isSuccessful) {
-                return@withContext UiState.Error("Failed to load daily ayah")
+            if (response.isSuccessful) {
+                val editions = response.body()?.data
+                if (!editions.isNullOrEmpty() && editions.size >= 3) {
+                    val arabicEdition = editions[0]
+                    val englishEdition = editions[1]
+                    val urduEdition = editions[2]
+
+                    val ayah = Ayah(
+                        arabic = arabicEdition.text,
+                        english = englishEdition.text,
+                        urdu = urduEdition.text,
+                        surahName = arabicEdition.surah?.englishName.orEmpty(),
+                        ayahNumber = arabicEdition.numberInSurah,
+                        translation = englishEdition.text,
+                        arabicText = arabicEdition.text
+                    )
+                    // Cache daily ayah
+                    offlineCacheDao.insertOrUpdate(OfflineCacheEntity(cacheKey, gson.toJson(ayah)))
+                    return@withContext UiState.Success(ayah)
+                }
             }
-
-            val editions = response.body()?.data
-            if (editions.isNullOrEmpty() || editions.size < 3) {
-                return@withContext UiState.Error("Failed to load daily ayah")
+            
+            // Try cache if API fails
+            val cached = offlineCacheDao.getCachedData(cacheKey)
+            if (cached != null) {
+                UiState.Success(gson.fromJson(cached.jsonData, Ayah::class.java))
+            } else {
+                // Fallback Ayah if nothing cached
+                UiState.Success(Ayah(
+                    arabic = "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ",
+                    english = "And your Lord says, \"Call upon Me; I will respond to you.\"",
+                    urdu = "اور تمہارے پروردگار نے ارشاد فرمایا ہے کہ مجھ سے دعا کرو، میں تمہاری (دعا) قبول کروں گا",
+                    surahName = "Ghafir",
+                    ayahNumber = 60,
+                    translation = "And your Lord says, \"Call upon Me; I will respond to you.\"",
+                    arabicText = "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ"
+                ))
             }
-
-            val arabicEdition = editions[0]
-            val englishEdition = editions[1]
-            val urduEdition = editions[2]
-
-            UiState.Success(
-                Ayah(
-                    arabic = arabicEdition.text,
-                    english = englishEdition.text,
-                    urdu = urduEdition.text,
-                    surahName = arabicEdition.surah?.englishName.orEmpty(),
-                    ayahNumber = arabicEdition.numberInSurah,
-                    translation = englishEdition.text,
-                    arabicText = arabicEdition.text
-                )
-            )
         } catch (e: Exception) {
-            UiState.Error(e.message ?: "Failed to load daily ayah")
+            val cached = offlineCacheDao.getCachedData(cacheKey)
+            if (cached != null) {
+                UiState.Success(gson.fromJson(cached.jsonData, Ayah::class.java))
+            } else {
+                // Fallback Ayah if nothing cached
+                UiState.Success(Ayah(
+                    arabic = "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ",
+                    english = "And your Lord says, \"Call upon Me; I will respond to you.\"",
+                    urdu = "اور تمہارے پروردگار نے ارشاد فرمایا ہے کہ مجھ سے دعا کرو، میں تمہاری (دعا) قبول کروں گا",
+                    surahName = "Ghafir",
+                    ayahNumber = 60,
+                    translation = "And your Lord says, \"Call upon Me; I will respond to you.\"",
+                    arabicText = "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ"
+                ))
+            }
         }
     }
 
@@ -213,10 +282,6 @@ class HomeRepositoryImpl @Inject constructor(
             translation = dua.translationEnglish,
             arabicText = dua.arabic
         )
-    }
-
-    private fun cleanTime(rawTime: String): String {
-        return rawTime.substringBefore(" ").trim()
     }
 
     private fun calculateNextPrayer(

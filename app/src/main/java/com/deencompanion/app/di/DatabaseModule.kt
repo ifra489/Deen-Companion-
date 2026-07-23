@@ -25,6 +25,7 @@ import com.deencompanion.app.data.local.dao.HabitDao
 import com.deencompanion.app.data.local.dao.GoalDao
 import com.deencompanion.app.data.local.dao.QazaNamazDao
 import com.deencompanion.app.data.local.dao.BookmarkDao
+import com.deencompanion.app.data.local.dao.OfflineCacheDao
 
 /**
  * LEARNING NOTE:
@@ -34,6 +35,10 @@ import com.deencompanion.app.data.local.dao.BookmarkDao
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+
+    @Provides
+    @Singleton
+    fun provideOfflineCacheDao(database: AppDatabase): OfflineCacheDao = database.offlineCacheDao()
 
     @Provides
     @Singleton

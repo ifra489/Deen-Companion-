@@ -1,17 +1,15 @@
 package com.deencompanion.app.presentation.ui.hadith
 
-
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
@@ -33,10 +31,19 @@ fun HadithDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hadith", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "Hadith", 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
@@ -52,78 +59,98 @@ fun HadithDetailScreen(
             }
             is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = MaterialTheme.colorScheme.error)
+                    Text(s.message, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
                 }
             }
-            is UiState.Empty -> {}
             is UiState.Success -> {
                 val hadith = s.data
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
-                        .padding(16.dp)
                         .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         listOf("en" to "English", "ur" to "Urdu", "roman" to "Roman Urdu").forEach { (code, label) ->
                             FilterChip(
                                 selected = selectedLanguage == code,
                                 onClick = { viewModel.setLanguage(code) },
-                                label = { Text(label, fontSize = 12.sp) },
+                                label = { Text(label, style = MaterialTheme.typography.bodySmall) },
+                                shape = MaterialTheme.shapes.large,
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                    selectedLabelColor = Color.White
                                 )
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Card(
-                        shape = RoundedCornerShape(12.dp),
+                        shape = MaterialTheme.shapes.large,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                        modifier = Modifier.fillMaxWidth()
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                     ) {
-                        Column(modifier = Modifier.padding(20.dp)) {
+                        Column(modifier = Modifier.padding(24.dp)) {
                             Text(
                                 text = hadith.arabic,
-                                fontSize = 22.sp,
-                                fontWeight = FontWeight.Medium,
+                                style = MaterialTheme.typography.displayLarge.copy(
+                                    fontSize = 24.sp,
+                                    textAlign = TextAlign.End,
+                                    textDirection = TextDirection.Rtl
+                                ),
                                 color = MaterialTheme.colorScheme.onSurface,
-                                lineHeight = 36.sp,
-                                textAlign = TextAlign.End,
-                                style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
+                                lineHeight = 38.sp,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(24.dp))
                             val translation = when (selectedLanguage) {
                                 "ur" -> hadith.urdu
                                 "roman" -> hadith.romanUrdu
                                 else -> hadith.english
                             }
-                            Text(text = translation, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface, lineHeight = 24.sp)
+                            Text(
+                                text = translation, 
+                                style = MaterialTheme.typography.bodyLarge, 
+                                color = MaterialTheme.colorScheme.onSurface, 
+                                lineHeight = 26.sp
+                            )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     Card(
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                        shape = MaterialTheme.shapes.large,
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Narrator: ${hadith.narrator}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Source: ${hadith.source}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text("Reference: ${hadith.reference}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "Narrator: ${hadith.narrator}", 
+                                style = MaterialTheme.typography.bodySmall, 
+                                fontWeight = FontWeight.Bold, 
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = "Source: ${hadith.source}", 
+                                style = MaterialTheme.typography.bodySmall, 
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "Reference: ${hadith.reference}", 
+                                style = MaterialTheme.typography.bodySmall, 
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
+                    
+                    Spacer(modifier = Modifier.height(48.dp))
                 }
             }
+            else -> {}
         }
     }
 }

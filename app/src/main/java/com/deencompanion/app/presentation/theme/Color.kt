@@ -4,83 +4,71 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-// ── Navy + Gold Palette ──────────────────
+// ── Dark Theme Colors ──────────────────
+val DarkBackground = Color(0xFF0F172A)
+val DarkSurface    = Color(0xFF1E293B)
+val DarkPrimary    = Color(0xFFD4AF37)
+val DarkSecondary  = Color(0xFFFACC15)
+val DarkTextPrimary = Color(0xFFF8FAFC)
+val DarkTextSecondary = Color(0xFFCBD5E1)
+val DarkBorder     = Color(0xFF334155)
+val DarkSuccess    = Color(0xFF22C55E)
 
-// Navy shades
-val NavyDarkest   = Color(0xFF070E1A)
-val NavyDark      = Color(0xFF0A1628)
-val NavyCard      = Color(0xFF0F1F3D)
-val NavySurface   = Color(0xFF162040)
-val NavyLight     = Color(0xFF1E2D52)
-val NavyMedium    = Color(0xFF243560)
+// ── Light Theme Colors ─────────────────
+val LightBackground = Color(0xFFF8FAFC)
+val LightSurface    = Color(0xFFFFFFFF)
+val LightPrimary    = Color(0xFFB8860B)
+val LightAccent     = Color(0xFFD4AF37)
+val LightTextPrimary = Color(0xFF1E293B)
+val LightTextSecondary = Color(0xFF64748B)
+val LightBorder     = Color(0xFFE2E8F0)
+val LightSuccess    = Color(0xFF16A34A)
 
-// Gold shades
-val GoldPrimary   = Color(0xFFC9A84C)
-
-// Legacy / Shortcut for screens
-val PrimaryColor = GoldPrimary
-val GoldLight     = Color(0xFFE8CC7A)
-val GoldSoft      = Color(0xFFF5E6B8)
-val GoldDark      = Color(0xFF9C7A2E)
-
-// Neutrals
-val PureWhite     = Color(0xFFFFFFFF)
-val OffWhite      = Color(0xFFF8F9FF)
-val LightSurface  = Color(0xFFEEF1FB)
-val TextMutedDark = Color(0xFF8899BB)
-val TextMutedLight = Color(0xFF5566AA)
-val ErrorRed      = Color(0xFFCF6679)
+// ── Shared Colors ──────────────────────
+val White = Color(0xFFFFFFFF)
+val ProgressRemaining = Color(0xFF475569)
+val ToggleTrackOff = Color(0xFFCBD5E1)
 
 // ── DARK Color Scheme ────────────────────
-// Navy background + Gold accents
 val DeenDarkColorScheme = darkColorScheme(
-    primary              = GoldPrimary,
-    onPrimary            = NavyDarkest,
-    primaryContainer     = NavyCard,
-    onPrimaryContainer   = GoldLight,
-    secondary            = GoldLight,
-    onSecondary          = NavyDarkest,
-    secondaryContainer   = NavySurface,
-    onSecondaryContainer = GoldSoft,
-    tertiary             = GoldLight,
-    onTertiary           = NavyDarkest,
-    tertiaryContainer    = NavyLight,
-    onTertiaryContainer  = GoldSoft,
-    background           = NavyDark,
-    onBackground         = PureWhite,
-    surface              = NavyCard,
-    onSurface            = PureWhite,
-    surfaceVariant       = NavySurface,
-    onSurfaceVariant     = TextMutedDark,
-    error                = ErrorRed,
-    onError              = PureWhite,
-    outline              = GoldDark,
-    outlineVariant       = NavyLight
+    primary              = DarkPrimary,
+    onPrimary            = White,
+    primaryContainer     = DarkSurface,
+    onPrimaryContainer   = DarkPrimary,
+    secondary            = DarkSecondary,
+    onSecondary          = DarkBackground,
+    secondaryContainer   = DarkSurface,
+    onSecondaryContainer = DarkSecondary,
+    background           = DarkBackground,
+    onBackground         = DarkTextPrimary,
+    surface              = DarkSurface,
+    onSurface            = DarkTextPrimary,
+    surfaceVariant       = DarkSurface,
+    onSurfaceVariant     = DarkTextSecondary,
+    error                = Color(0xFFEF4444),
+    onError              = White,
+    outline              = DarkBorder,
+    outlineVariant       = DarkBorder
 )
 
 // ── LIGHT Color Scheme ───────────────────
-// White background + Navy text + Gold accents
 val DeenLightColorScheme = lightColorScheme(
-    primary              = NavyDark,
-    onPrimary            = PureWhite,
+    primary              = LightPrimary,
+    onPrimary            = White,
     primaryContainer     = LightSurface,
-    onPrimaryContainer   = NavyDarkest,
-    secondary            = GoldDark,
-    onSecondary          = PureWhite,
-    secondaryContainer   = GoldSoft,
-    onSecondaryContainer = NavyDarkest,
-    tertiary             = GoldPrimary,
-    onTertiary           = NavyDarkest,
-    tertiaryContainer    = GoldSoft,
-    onTertiaryContainer  = NavyDarkest,
-    background           = OffWhite,
-    onBackground         = NavyDark,
-    surface              = PureWhite,
-    onSurface            = NavyDark,
+    onPrimaryContainer   = LightPrimary,
+    secondary            = LightAccent,
+    onSecondary          = White,
+    secondaryContainer   = LightSurface,
+    onSecondaryContainer = LightAccent,
+    background           = LightBackground,
+    onBackground         = LightTextPrimary,
+    surface              = LightSurface,
+    onSurface            = LightTextPrimary,
     surfaceVariant       = LightSurface,
-    onSurfaceVariant     = TextMutedLight,
-    error                = Color(0xFFB00020),
-    onError              = PureWhite,
-    outline              = NavyMedium,
-    outlineVariant       = LightSurface
+    onSurfaceVariant     = LightTextSecondary,
+    error                = Color(0xFFDC2626),
+    onError              = White,
+    outline              = LightBorder,
+    outlineVariant       = LightBorder
 )

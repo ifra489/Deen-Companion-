@@ -27,4 +27,9 @@ interface QuranRepository {
      * @param languageCode The language code ("en", "ur", "hi").
      */
     suspend fun getSurahWordByWord(surahNumber: Int, languageCode: String): Result<List<WordVerse>>
+
+    /**
+     * Returns a flow of surah numbers that are currently cached offline.
+     */
+    fun getDownloadedSurahNumbers(): kotlinx.coroutines.flow.Flow<List<Int>>
 }

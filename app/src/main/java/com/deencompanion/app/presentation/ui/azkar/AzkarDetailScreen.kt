@@ -1,16 +1,13 @@
 package com.deencompanion.app.presentation.ui.azkar
 
-
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,10 +36,19 @@ fun AzkarDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = title, 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
@@ -58,19 +64,14 @@ fun AzkarDetailScreen(
             }
             is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = MaterialTheme.colorScheme.error)
-                }
-            }
-            is UiState.Empty -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text("No Azkar available", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+                    Text(s.message, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
                 }
             }
             is UiState.Success -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().padding(padding),
                     contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(s.data, key = { it.id }) { azkar ->
                         AzkarCard(
@@ -82,6 +83,7 @@ fun AzkarDetailScreen(
                     }
                 }
             }
+            else -> {}
         }
     }
 }
@@ -99,28 +101,43 @@ fun AzkarCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { if (!isComplete) onTap() },
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = if (isComplete) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surface
+            containerColor = if (isComplete) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = azkar.arabic,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.End,
+                    textDirection = TextDirection.Rtl
+                ),
                 color = MaterialTheme.colorScheme.onSurface,
-                lineHeight = 34.sp,
-                textAlign = TextAlign.End,
-                style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
+                lineHeight = 38.sp,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = azkar.english, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface, lineHeight = 20.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = azkar.reference, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            
+            Spacer(modifier = Modifier.height(20.dp))
+            
+            Text(
+                text = azkar.english, 
+                style = MaterialTheme.typography.bodyLarge, 
+                color = MaterialTheme.colorScheme.onSurface, 
+                lineHeight = 24.sp
+            )
+            
             Spacer(modifier = Modifier.height(12.dp))
+            
+            Text(
+                text = azkar.reference, 
+                style = MaterialTheme.typography.bodySmall, 
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -128,17 +145,27 @@ fun AzkarCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = if (isComplete) "Completed" else "Tap to count: $currentCount / ${azkar.repeatCount}",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (isComplete) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    text = if (isComplete) "🎉 Completed" else "Count: $currentCount / ${azkar.repeatCount}",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isComplete) Color(0xFF22C55E) else MaterialTheme.colorScheme.primary
                 )
-                Row {
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     if (isComplete) {
-                        Icon(Icons.Default.Check, contentDescription = "Done", tint = MaterialTheme.colorScheme.primary)
+                        Icon(
+                            imageVector = Icons.Rounded.Check, 
+                            contentDescription = null, 
+                            tint = Color(0xFF22C55E),
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
                     }
-                    IconButton(onClick = onReset) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
+                    IconButton(onClick = onReset, modifier = Modifier.size(24.dp)) {
+                        Icon(
+                            imageVector = Icons.Rounded.Refresh, 
+                            contentDescription = "Reset", 
+                            tint = MaterialTheme.colorScheme.outlineVariant
+                        )
                     }
                 }
             }

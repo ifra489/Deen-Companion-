@@ -1,21 +1,19 @@
 package com.deencompanion.app.presentation.ui.hadith
 
-
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,10 +39,19 @@ fun HadithListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hadith", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "Hadith", 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
@@ -56,37 +63,44 @@ fun HadithListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                placeholder = { Text("Search by narrator, keyword...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                placeholder = { Text("Search Hadiths...") },
+                leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
                         IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
-                            Icon(Icons.Default.Close, contentDescription = "Clear")
+                            Icon(imageVector = Icons.Rounded.Close, contentDescription = "Clear")
                         }
                     }
                 },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                shape = MaterialTheme.shapes.large,
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                )
             )
 
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 items(categories) { category ->
                     FilterChip(
                         selected = selectedCategory == category,
                         onClick = { viewModel.onCategorySelected(category) },
-                        label = { Text(category.replaceFirstChar { it.uppercase() }) },
+                        label = { Text(category.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.bodySmall) },
+                        shape = MaterialTheme.shapes.large,
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            selectedLabelColor = Color.White
                         )
                     )
                 }
@@ -100,24 +114,20 @@ fun HadithListScreen(
                 }
                 is UiState.Error -> {
                     val errorMessage = (listState as UiState.Error).message
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(errorMessage, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-                    }
-                }
-                is UiState.Empty -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No Hadiths available", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+                    Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+                        Text(errorMessage, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
                     }
                 }
                 is UiState.Success -> {
                     if (filteredHadiths.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No results found", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+                            Text("No Hadiths found", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     } else {
                         LazyColumn(
                             verticalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(bottom = 16.dp)
+                            contentPadding = PaddingValues(16.dp),
+                            modifier = Modifier.fillMaxSize()
                         ) {
                             items(filteredHadiths, key = { it.id }) { hadith ->
                                 HadithCard(hadith = hadith) {
@@ -127,6 +137,7 @@ fun HadithListScreen(
                         }
                     }
                 }
+                else -> {}
             }
         }
     }
@@ -136,29 +147,29 @@ fun HadithListScreen(
 fun HadithCard(hadith: Hadith, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
             Text(
                 text = hadith.narrator,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = hadith.english,
-                fontSize = 15.sp,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = hadith.reference,
-                fontSize = 12.sp,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetPrayerTimesUseCase @Inject constructor(
     private val repository: HomeRepository
 ) {
-    suspend operator fun invoke(city: String, country: String): UiState<PrayerTimes> {
-        return repository.getPrayerTimes(city, country)
+    suspend operator fun invoke(latitude: Double, longitude: Double): UiState<PrayerTimes> {
+        return repository.getPrayerTimes(latitude, longitude)
     }
 }

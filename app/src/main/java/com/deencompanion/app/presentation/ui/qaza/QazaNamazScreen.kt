@@ -3,11 +3,10 @@ package com.deencompanion.app.presentation.ui.qaza
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,35 +33,48 @@ fun QazaNamazScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Qaza Namaz Tracker", color = Color(0xFF212121), fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "Qaza Tracker", 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF212121))
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 actions = {
                     if (settings != null) {
                         IconButton(onClick = { showResetDialog = true }) {
-                            Icon(Icons.Default.Refresh, contentDescription = "Recalculate", tint = Color(0xFF212121))
+                            Icon(
+                                imageVector = Icons.Rounded.Refresh, 
+                                contentDescription = "Reset", 
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
-        containerColor = Color(0xFFF5F5F5)
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        if (settings == null) {
-            QazaSetupForm(
-                modifier = Modifier.padding(padding),
-                onCalculate = { current, obligation, startedAge -> viewModel.calculate(current, obligation, startedAge) }
-            )
-        } else {
-            QazaPrayerList(
-                modifier = Modifier.padding(padding),
-                prayers = prayers,
-                onMarkCompleted = { type, amount -> viewModel.markCompleted(type, amount) }
-            )
+        Box(modifier = Modifier.padding(padding)) {
+            if (settings == null) {
+                QazaSetupForm(
+                    onCalculate = { current, obligation, startedAge -> viewModel.calculate(current, obligation, startedAge) }
+                )
+            } else {
+                QazaPrayerList(
+                    prayers = prayers,
+                    onMarkCompleted = { type, amount -> viewModel.markCompleted(type, amount) }
+                )
+            }
         }
     }
 
@@ -70,7 +82,7 @@ fun QazaNamazScreen(
         AlertDialog(
             onDismissRequest = { showResetDialog = false },
             title = { Text("Recalculate?") },
-            text = { Text("This will reset your current progress and recalculate with new numbers. Continue?") },
+            text = { Text("This will reset your current progress and recalculate misseds prayers. Continue?", style = MaterialTheme.typography.bodyLarge) },
             confirmButton = {
                 Button(
                     onClick = { viewModel.resetCalculation(); showResetDialog = false },
@@ -85,89 +97,90 @@ fun QazaNamazScreen(
 }
 
 @Composable
-fun QazaSetupForm(modifier: Modifier = Modifier, onCalculate: (Int, Int, Int) -> Unit) {
+fun QazaSetupForm(onCalculate: (Int, Int, Int) -> Unit) {
     var currentAge by remember { mutableStateOf("") }
-    var obligationAge by remember { mutableStateOf("7") }
+    var obligationAge by remember { mutableStateOf("12") }
     var ageStartedPraying by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Enter your details",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF212121)
+            text = "Setup Missed Prayers",
+            style = MaterialTheme.typography.headlineMedium
         )
-        Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "This is an estimate based on the information you provide.",
-            fontSize = 12.sp,
-            color = Color.Gray
+            text = "Provide details to estimate your missed prayers since the age of obligation.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = currentAge,
             onValueChange = { currentAge = it },
-            label = { Text("Your current age") },
+            label = { Text("Your current age", style = MaterialTheme.typography.bodySmall) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = obligationAge,
             onValueChange = { obligationAge = it },
-            label = { Text("Age when prayer became obligatory (default 7)") },
+            label = { Text("Age of obligation (typically 12-15)", style = MaterialTheme.typography.bodySmall) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = ageStartedPraying,
             onValueChange = { ageStartedPraying = it },
-            label = { Text("Age from which you started praying regularly") },
+            label = { Text("Age you started regular prayer", style = MaterialTheme.typography.bodySmall) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium
         )
+
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = {
                 val current = currentAge.toIntOrNull() ?: 0
-                val obligation = obligationAge.toIntOrNull() ?: 7
+                val obligation = obligationAge.toIntOrNull() ?: 12
                 val started = ageStartedPraying.toIntOrNull() ?: obligation
                 if (current > 0) onCalculate(current, obligation, started)
             },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141C48)),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            shape = MaterialTheme.shapes.large
         ) {
-            Text("Calculate")
+            Text("Calculate Missed Prayers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
 fun QazaPrayerList(
-    modifier: Modifier = Modifier,
     prayers: List<QazaPrayer>,
     onMarkCompleted: (String, Int) -> Unit
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(prayers, key = { it.prayerType }) { prayer ->
             QazaPrayerCard(prayer = prayer, onMarkCompleted = onMarkCompleted)
         }
+        item { Spacer(modifier = Modifier.height(48.dp)) }
     }
 }
 
@@ -175,42 +188,59 @@ fun QazaPrayerList(
 fun QazaPrayerCard(prayer: QazaPrayer, onMarkCompleted: (String, Int) -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            Text(prayer.prayerType, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xFF212121))
-            Spacer(modifier = Modifier.height(8.dp))
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(text = prayer.prayerType, style = MaterialTheme.typography.titleLarge)
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
             LinearProgressIndicator(
                 progress = { prayer.progress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().height(8.dp),
-                color = Color(0xFF141C48),
-                trackColor = Color(0xFFE0E0E0)
+                modifier = Modifier.fillMaxWidth().height(10.dp),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.outlineVariant,
+                strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Remaining: ${prayer.remaining} / ${prayer.totalMissed}",
-                    fontSize = 13.sp,
-                    color = Color.Gray
-                )
+                Column {
+                    Text(
+                        text = "Remaining", 
+                        style = MaterialTheme.typography.bodySmall, 
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "${prayer.remaining} / ${prayer.totalMissed}", 
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
                         onClick = { onMarkCompleted(prayer.prayerType, 1) },
                         enabled = prayer.remaining > 0,
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                    ) { Text("+1", fontSize = 12.sp) }
+                        shape = MaterialTheme.shapes.medium,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                    ) { 
+                        Text("+1", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold) 
+                    }
                     Button(
                         onClick = { onMarkCompleted(prayer.prayerType, 10) },
                         enabled = prayer.remaining > 0,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141C48)),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                    ) { Text("+10", fontSize = 12.sp) }
+                        shape = MaterialTheme.shapes.medium
+                    ) { 
+                        Text("+10", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold) 
+                    }
                 }
             }
         }

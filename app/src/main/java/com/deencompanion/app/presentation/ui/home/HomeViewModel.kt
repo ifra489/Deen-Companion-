@@ -1,7 +1,6 @@
 package com.deencompanion.app.presentation.ui.home
 import com.deencompanion.app.util.notification.AdhanScheduler
 import android.content.Context
-import android.location.Geocoder
 import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -96,75 +95,38 @@ class HomeViewModel @Inject constructor(
                     ).await()
 
                 if (location != null) {
-                    val city = getCityFromLocation(location) ?: "Rawalpindi"
-                    val country = getCountryFromLocation(location) ?: "Pakistan"
-                    loadPrayerTimes(city, country)
+                    loadPrayerTimes(location.latitude, location.longitude)
                 } else {
-                    loadPrayerTimes("Rawalpindi", "Pakistan")
+                    // Fallback to Rawalpindi coordinates if location is null
+                    loadPrayerTimes(33.5973, 73.0479)
                 }
             } catch (e: SecurityException) {
-                // Location permission not granted
-                loadPrayerTimes("Rawalpindi", "Pakistan")
+                // Location permission not granted, fallback to Rawalpindi
+                loadPrayerTimes(33.5973, 73.0479)
             } catch (e: Exception) {
-                loadPrayerTimes("Rawalpindi", "Pakistan")
+                loadPrayerTimes(33.5973, 73.0479)
             }
         }
     }
 
     /**
-     * Load prayer times for specific city/country.
+     * Load prayer times for specific coordinates.
      */
     fun loadPrayerTimes(
-        city: String = "Rawalpindi",
-        country: String = "Pakistan"
+        latitude: Double,
+        longitude: Double
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {  val result = getPrayerTimesUseCase(city, country)
+            try {
+                val result = getPrayerTimesUseCase(latitude, longitude)
                 _prayerTimesState.value = result
                 if (result is UiState.Success) {
                     adhanScheduler.scheduleAllPrayerAlarms(result.data)
                 }
             } catch (e: Exception) {
-            _prayerTimesState.value =
-                UiState.Error(e.message ?: "Failed to load prayer times")
-        }
-        }
-    }
-
-        /**
-     * Get city name from GPS coordinates using Geocoder.
-     */
-    @Suppress("DEPRECATION")
-    private fun getCityFromLocation(location: Location): String? {
-        return try {
-            val geocoder = Geocoder(context, Locale.getDefault())
-            val addresses = geocoder.getFromLocation(
-                location.latitude,
-                location.longitude,
-                1
-            )
-            addresses?.firstOrNull()?.locality
-                ?: addresses?.firstOrNull()?.subAdminArea
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    /**
-     * Get country name from GPS coordinates using Geocoder.
-     */
-    @Suppress("DEPRECATION")
-    private fun getCountryFromLocation(location: Location): String? {
-        return try {
-            val geocoder = Geocoder(context, Locale.getDefault())
-            val addresses = geocoder.getFromLocation(
-                location.latitude,
-                location.longitude,
-                1
-            )
-            addresses?.firstOrNull()?.countryName
-        } catch (e: Exception) {
-            null
+                _prayerTimesState.value =
+                    UiState.Error(e.message ?: "Failed to load prayer times")
+            }
         }
     }
 

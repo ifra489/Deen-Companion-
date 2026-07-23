@@ -128,7 +128,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging)
     // Adhan (Prayer Times)
-//    implementation("com.batoulapps.adhan:adhan-kotlin:1.2.1")
+    implementation("com.batoulapps.adhan:adhan:1.2.1")
 
     // Accompanist (Permissions)
     implementation(libs.accompanist.permissions)

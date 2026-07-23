@@ -1,43 +1,29 @@
 package com.deencompanion.app.presentation.ui.home
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
-
-import com.deencompanion.app.presentation.ui.home.components.DailyAyahCard
-import com.deencompanion.app.presentation.ui.home.components.DailyDuaCard
-
-import com.deencompanion.app.presentation.ui.home.components.QuickAccessGrid
-import com.deencompanion.app.presentation.ui.home.components.DailyHadithCard
-import com.deencompanion.app.presentation.ui.home.components.DateCard
-import com.deencompanion.app.presentation.ui.home.components.PrayerTimesCard
-
-import android.Manifest
-import android.os.Build
+import com.deencompanion.app.presentation.ui.home.components.*
+import com.deencompanion.app.presentation.ui.settings.AdhanToggleSetting
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 
-import com.deencompanion.app.presentation.ui.settings.AdhanToggleSetting
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-
 fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
     val locationPermissionState = rememberPermissionState(
         Manifest.permission.ACCESS_FINE_LOCATION
     )
@@ -49,6 +35,7 @@ fun HomeScreen(
             locationPermissionState.launchPermissionRequest()
         }
     }
+
     val notificationPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
     } else null
@@ -58,6 +45,7 @@ fun HomeScreen(
             notificationPermissionState.launchPermissionRequest()
         }
     }
+
     val prayerTimesState by viewModel.prayerTimesState.collectAsState()
     val hijriDateState by viewModel.hijriDateState.collectAsState()
     val dailyAyahState by viewModel.dailyAyahState.collectAsState()
@@ -65,58 +53,63 @@ fun HomeScreen(
     val dailyDua by viewModel.dailyDua.collectAsState()
     val countdown by viewModel.countdownTimer.collectAsState()
     val userName by viewModel.userName.collectAsState()
+
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background // Unified background
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(innerPadding),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Item 1: Greeting Text
+            // Greeting Header
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 8.dp)
+                        .padding(vertical = 8.dp)
                 ) {
                     Text(
-                        text = "AssalamuAlaikum",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Normal
+                        text = "Assalamu Alaikum",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = userName,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
 
-            // Item 2: PrayerTimesCard
+            // Prayer Times Card
             item {
-                val countdownTimer = ""
                 PrayerTimesCard(
                     state = prayerTimesState,
-                    countdown = countdownTimer,
-
+                    countdown = countdown,
                     onRetry = { viewModel.loadPrayerTimesByLocation() }
                 )
             }
 
-            // Item 3: DateCard
+            // Date and Adhan Toggle
             item {
-                DateCard(state = hijriDateState)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        DateCard(state = hijriDateState)
+                    }
+                    Box(modifier = Modifier.weight(0.4f)) {
+                        AdhanToggleSetting()
+                    }
+                }
             }
-            item {
-                AdhanToggleSetting(modifier = Modifier.padding(vertical = 8.dp))
-            }
-            // Item 4: DailyAyahCard
+
+            // Daily Ayah
             item {
                 DailyAyahCard(
                     state = dailyAyahState,
@@ -124,27 +117,29 @@ fun HomeScreen(
                 )
             }
 
-            // Item 5: DailyHadithCard
+            // Daily Hadith
             item {
                 DailyHadithCard(hadith = dailyHadith)
             }
 
-            // Item 6: DailyDuaCard
+            // Daily Dua
             item {
                 DailyDuaCard(dua = dailyDua)
             }
 
-            // Item 7: QuickAccessGrid
+            // Quick Access Grid
             item {
+                Text(
+                    text = "Quick Access",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 QuickAccessGrid(navController = navController)
             }
 
-            // Item 8: Bottom Navigation spacer
             item {
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }
 }
-
-

@@ -21,10 +21,10 @@ class HabitRepositoryImpl @Inject constructor(
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     private val defaultHabits = listOf(
-        "Quran Parhna" to "default_quran",
-        "Sadqa Dena" to "default_sadqa",
-        "Tahajjud" to "default_tahajjud",
-        "Zikr Karna" to "default_zikr"
+        "Read Quran " to "default_quran",
+        "Give Charity" to "default_sadqa",
+        "Pray Tahajjud" to "default_tahajjud",
+        "Do Dhikr" to "default_zikr"
     )
 
     override fun getHabits(): Flow<List<Habit>> {

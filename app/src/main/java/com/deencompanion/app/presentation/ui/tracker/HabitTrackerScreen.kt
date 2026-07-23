@@ -6,10 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,52 +38,72 @@ fun HabitTrackerScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Habit Tracker", color = Color(0xFF212121), fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "Habit Tracker", 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFF212121))
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = { newHabitName = ""; showAddDialog = true }) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Habit", tint = Color(0xFF2E7D32))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFF5F5F5))
-            )
-        },
-        containerColor = Color(0xFFF5F5F5)
-    ) { padding ->
-        when (val s = state) {
-            is UiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFF2E7D32))
-                }
-            }
-            is UiState.Error -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text(s.message, color = Color.Red)
-                }
-            }
-            is UiState.Empty -> {
-                Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    Text("No habits yet. Tap + to add one.", color = Color.Gray)
-                }
-            }
-            is UiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(padding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    items(s.data, key = { it.id }) { habit ->
-                        HabitCard(
-                            habit = habit,
-                            onToggle = { viewModel.toggleHabit(habit.id) },
-                            onDelete = { showDeleteDialog = habit }
+                        Icon(
+                            imageVector = Icons.Rounded.Add, 
+                            contentDescription = "Add Habit", 
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            when (val s = state) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
                 }
+                is UiState.Error -> {
+                    Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+                        Text(s.message, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.error)
+                    }
+                }
+                is UiState.Empty -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("No habits yet. Tap + to add one.", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+                is UiState.Success -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(s.data, key = { it.id }) { habit ->
+                            HabitCard(
+                                habit = habit,
+                                onToggle = { viewModel.toggleHabit(habit.id) },
+                                onDelete = { showDeleteDialog = habit }
+                            )
+                        }
+                    }
+                }
+                else -> {}
             }
         }
     }
@@ -96,13 +117,13 @@ fun HabitTrackerScreen(
                     value = newHabitName,
                     onValueChange = { newHabitName = it },
                     placeholder = { Text("e.g. Read 1 page of Tafseer") },
-                    singleLine = true
+                    singleLine = true,
+                    shape = MaterialTheme.shapes.medium
                 )
             },
             confirmButton = {
                 Button(
-                    onClick = { viewModel.addCustomHabit(newHabitName); showAddDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                    onClick = { viewModel.addCustomHabit(newHabitName); showAddDialog = false }
                 ) { Text("Add") }
             },
             dismissButton = {
@@ -133,41 +154,41 @@ fun HabitTrackerScreen(
 fun HabitCard(habit: Habit, onToggle: () -> Unit, onDelete: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(44.dp)
                     .clickable { onToggle() }
                     .background(
-                        if (habit.isCompletedToday) Color(0xFF2E7D32) else Color(0xFFE0E0E0),
+                        if (habit.isCompletedToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
                         CircleShape
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 if (habit.isCompletedToday) {
-                    Icon(Icons.Default.Check, contentDescription = "Done", tint = Color.White)
+                    Icon(imageVector = Icons.Rounded.Check, contentDescription = "Done", tint = Color.White)
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(habit.name, fontWeight = FontWeight.SemiBold, color = Color(0xFF212121), fontSize = 15.sp)
-                Spacer(modifier = Modifier.height(2.dp))
+                Text(text = habit.name, style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = if (habit.currentStreak > 0) "🔥 ${habit.currentStreak} day streak" else "No streak yet",
-                    fontSize = 12.sp,
-                    color = Color.Gray
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             if (habit.isCustom) {
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Gray, modifier = Modifier.size(18.dp))
+                    Icon(imageVector = Icons.Rounded.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.outlineVariant, modifier = Modifier.size(20.dp))
                 }
             }
         }

@@ -9,14 +9,14 @@
 
     <!-- Minimal Theme for SplashActivity to avoid system splash -->
     <style name="Theme.DeenCompanion.NoSystemSplash" parent="Theme.DeenCompanion">
-        <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
     </style>
 
     <!-- Splash Theme (kept for reference / backup) -->
     <style name="Theme.DeenCompanion.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#141C48</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon</item>
-        <item name="postSplashScreenTheme">@style/Theme.DeenCompanion</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.DeenCompanion.NoSystemSplash</item>
     </style>
 
 </resources>

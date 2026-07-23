@@ -9,7 +9,7 @@ import com.deencompanion.app.domain.model.PrayerTimes
 import com.deencompanion.app.util.UiState
 
 interface HomeRepository {
-    suspend fun getPrayerTimes(city: String, country: String): UiState<PrayerTimes>
+    suspend fun getPrayerTimes(latitude: Double, longitude: Double): UiState<PrayerTimes>
     suspend fun getHijriDate(): UiState<HijriDate>
     suspend fun getDailyAyah(): UiState<Ayah>
     fun getDailyHadith(context: Context): DailyHadith

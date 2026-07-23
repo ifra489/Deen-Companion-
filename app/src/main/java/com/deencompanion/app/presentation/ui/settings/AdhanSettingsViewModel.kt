@@ -32,7 +32,8 @@ class AdhanSettingsViewModel @Inject constructor(
             settingsRepository.setAdhanEnabled(enabled)
 
             if (enabled) {
-                val result = homeRepository.getPrayerTimes("Rawalpindi", "Pakistan")
+                // Use fallback coordinates for Rawalpindi
+                val result = homeRepository.getPrayerTimes(33.5973, 73.0479)
                 if (result is UiState.Success) {
                     adhanScheduler.scheduleAllPrayerAlarms(result.data)
                 }

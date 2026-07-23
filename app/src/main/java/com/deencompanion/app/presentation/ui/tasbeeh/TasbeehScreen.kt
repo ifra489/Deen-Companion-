@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -14,10 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -68,16 +66,15 @@ fun TasbeehScreen(
                 title = {
                     Text(
                         text = "Tasbeeh Counter",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
+                        style = MaterialTheme.typography.displayLarge
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.Rounded.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onBackground
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
@@ -100,32 +97,21 @@ fun TasbeehScreen(
                 }
                 is UiState.Error -> {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(24.dp),
+                        modifier = Modifier.fillMaxSize().padding(24.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = state.message,
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = { /* ViewModel restarts on emission */ },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                        ) {
+                        Button(onClick = { /* ViewModel restarts on emission */ }) {
                             Text("Retry")
                         }
                     }
-                }
-                is UiState.Empty -> {
-                    Text(
-                        text = "No dhikr records found.",
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
                 is UiState.Success -> {
                     val items = state.data
@@ -139,27 +125,25 @@ fun TasbeehScreen(
                             .padding(horizontal = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Dhikr Selector Row
                         Text(
                             text = "Select Dhikr",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
                         )
 
                         LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(vertical = 4.dp)
+                            contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             items(items, key = { it.id }) { item ->
                                 FilterChip(
                                     selected = item.id == selectedId,
                                     onClick = { viewModel.selectItem(item.id) },
-                                    label = { Text(item.displayName) },
+                                    label = { Text(item.displayName, style = MaterialTheme.typography.bodySmall) },
+                                    shape = MaterialTheme.shapes.large,
                                     trailingIcon = if (item.isCustom) {
                                         {
                                             IconButton(
@@ -167,34 +151,35 @@ fun TasbeehScreen(
                                                 modifier = Modifier.size(18.dp)
                                             ) {
                                                 Icon(
-                                                    imageVector = Icons.Default.Delete,
-                                                    contentDescription = "Delete Custom",
+                                                    imageVector = Icons.Rounded.Delete,
+                                                    contentDescription = null,
                                                     tint = MaterialTheme.colorScheme.error,
-                                                    modifier = Modifier.size(14.dp)
+                                                    modifier = Modifier.size(16.dp)
                                                 )
                                             }
                                         }
                                     } else null,
                                     colors = FilterChipDefaults.filterChipColors(
                                         selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                                        selectedLabelColor = Color.White
                                     )
                                 )
                             }
 
                             item {
-                                InputChip(
-                                    selected = false,
+                                AssistChip(
                                     onClick = {
                                         newDhikrName = ""
                                         showAddDialog = true
                                     },
-                                    label = { Text("Custom +") },
+                                    label = { Text("Add Custom", style = MaterialTheme.typography.bodySmall) },
+                                    shape = MaterialTheme.shapes.large,
                                     leadingIcon = {
                                         Icon(
-                                            imageVector = Icons.Default.Add,
-                                            contentDescription = "Add Custom",
-                                            modifier = Modifier.size(16.dp)
+                                            imageVector = Icons.Rounded.Add,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(16.dp),
+                                            tint = MaterialTheme.colorScheme.primary
                                         )
                                     }
                                 )
@@ -203,40 +188,35 @@ fun TasbeehScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Target Selector Goal Row
                         Text(
                             text = "Target Goal",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.fillMaxWidth()
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                         )
 
                         val targets = listOf(33, 100, 500, 1000)
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             targets.forEach { target ->
                                 val isSelected = selectedItem.targetCount == target
                                 Box(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clip(RoundedCornerShape(8.dp))
+                                        .clip(MaterialTheme.shapes.medium)
                                         .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
-                                        .combinedClickable(
-                                            onClick = { viewModel.updateTarget(selectedItem.id, target) }
-                                        )
-                                        .padding(vertical = 8.dp),
+                                        .clickable { viewModel.updateTarget(selectedItem.id, target) }
+                                        .padding(vertical = 12.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         text = "$target",
-                                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                        fontSize = 14.sp
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                     )
                                 }
                             }
@@ -245,51 +225,38 @@ fun TasbeehScreen(
                             Box(
                                 modifier = Modifier
                                     .weight(1.2f)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(MaterialTheme.shapes.medium)
                                     .background(if (isCustomTarget) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
-                                    .combinedClickable(
-                                        onClick = {
-                                            customTargetInput = "${selectedItem.targetCount}"
-                                            showCustomTargetDialog = true
-                                        }
-                                    )
-                                    .padding(vertical = 8.dp),
+                                    .clickable {
+                                        customTargetInput = "${selectedItem.targetCount}"
+                                        showCustomTargetDialog = true
+                                    }
+                                    .padding(vertical = 12.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = if (isCustomTarget) "${selectedItem.targetCount}" else "Custom...",
-                                    color = if (isCustomTarget) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = if (isCustomTarget) FontWeight.Bold else FontWeight.Normal,
-                                    fontSize = 14.sp
+                                    text = if (isCustomTarget) "${selectedItem.targetCount}" else "Custom",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = if (isCustomTarget) Color.White else MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = if (isCustomTarget) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // Circular Tasbeeh Bead Ring UI representation
-                        val ringBackgroundColor = MaterialTheme.colorScheme.surface
-                        val activeBeadColor = MaterialTheme.colorScheme.primary
-                        val inactiveBeadColor = MaterialTheme.colorScheme.outlineVariant
+                        Spacer(modifier = Modifier.height(48.dp))
 
                         Box(
                             modifier = Modifier
-                                .size(260.dp)
+                                .size(280.dp)
                                 .clip(CircleShape)
-                                .background(ringBackgroundColor)
-                                .combinedClickable(
-                                    onClick = { viewModel.incrementCount(selectedItem.id) }
-                                ),
+                                .background(MaterialTheme.colorScheme.surface)
+                                .clickable { viewModel.incrementCount(selectedItem.id) },
                             contentAlignment = Alignment.Center
                         ) {
                             val activeBeadCount = selectedItem.count % 33
                             val hasCompletedLoop = selectedItem.count >= 33
 
-                            Canvas(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(20.dp)
-                            ) {
+                            Canvas(modifier = Modifier.fillMaxSize().padding(24.dp)) {
                                 val center = Offset(size.width / 2, size.height / 2)
                                 val radius = size.width / 2 - 12.dp.toPx()
                                 val numBeads = 33
@@ -299,155 +266,114 @@ fun TasbeehScreen(
                                     val x = center.x + radius * cos(angle).toFloat()
                                     val y = center.y + radius * sin(angle).toFloat()
 
-                                    val isActive = if (activeBeadCount == 0) {
-                                        hasCompletedLoop
-                                    } else {
-                                        i < activeBeadCount
-                                    }
-
-                                    val isCurrent = if (activeBeadCount == 0) {
-                                        hasCompletedLoop && i == 32
-                                    } else {
-                                        i == activeBeadCount - 1
-                                    }
+                                    val isActive = if (activeBeadCount == 0) hasCompletedLoop else i < activeBeadCount
+                                    val isCurrent = if (activeBeadCount == 0) hasCompletedLoop && i == 32 else i == activeBeadCount - 1
 
                                     val beadRadius = if (isCurrent) 10.dp.toPx() else 7.dp.toPx()
                                     val color = when {
-                                        isCurrent -> Color(0xFFFF9800)
-                                        isActive -> activeBeadColor
-                                        else -> inactiveBeadColor
+                                        isCurrent -> Color(0xFFFACC15)
+                                        isActive -> Color(0xFFD4AF37)
+                                        else -> Color(0xFF334155).copy(alpha = 0.3f)
                                     }
 
-                                    drawCircle(
-                                        color = color,
-                                        radius = beadRadius,
-                                        center = Offset(x, y)
-                                    )
-
+                                    drawCircle(color = color, radius = beadRadius, center = Offset(x, y))
                                     if (isCurrent) {
-                                        drawCircle(
-                                            color = ringBackgroundColor,
-                                            radius = beadRadius - 3.dp.toPx(),
-                                            center = Offset(x, y)
-                                        )
+                                        drawCircle(color = Color(0xFF1E293B), radius = beadRadius - 3.dp.toPx(), center = Offset(x, y))
                                     }
                                 }
                             }
 
-                            // Centered display inside Tasbeeh ring
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
                                 Text(
                                     text = selectedItem.displayName,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 24.dp)
+                                    modifier = Modifier.padding(horizontal = 32.dp)
                                 )
-                                Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "${selectedItem.count}",
-                                    fontSize = 48.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = MaterialTheme.colorScheme.primary
+                                    style = MaterialTheme.typography.displayLarge.copy(fontSize = 56.sp),
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
-                                Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "Goal: ${selectedItem.targetCount}",
-                                    fontSize = 14.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontWeight = FontWeight.Medium
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(48.dp))
 
-                        // Session Progress Card
                         val isTargetMet = selectedItem.count >= selectedItem.targetCount
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isTargetMet) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                                containerColor = if (isTargetMet) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface
                             ),
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
+                            shape = MaterialTheme.shapes.large,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
+                                modifier = Modifier.fillMaxWidth().padding(20.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column {
                                     Text(
                                         text = "Session Progress",
-                                        fontSize = 12.sp,
+                                        style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Text(
-                                        text = if (isTargetMet) "🎉 Goal Reached!" else "Tap the bead ring to count",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
+                                        text = if (isTargetMet) "🎉 Goal Reached!" else "Tap to count",
+                                        style = MaterialTheme.typography.titleLarge,
                                         color = if (isTargetMet) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                                 Text(
-                                    text = "${selectedItem.count} / ${selectedItem.targetCount}",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    text = "${selectedItem.count}/${selectedItem.targetCount}",
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(32.dp))
 
-                        // Quick Reset Button
                         IconButton(
                             onClick = { showResetConfirmDialog = true },
                             modifier = Modifier
-                                .padding(bottom = 24.dp)
-                                .size(56.dp)
+                                .size(64.dp)
                                 .background(MaterialTheme.colorScheme.surface, CircleShape)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = "Reset Counter",
-                                tint = MaterialTheme.colorScheme.onSurface
+                                imageVector = Icons.Rounded.Refresh,
+                                contentDescription = "Reset",
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(28.dp)
                             )
                         }
+                        
+                        Spacer(modifier = Modifier.height(48.dp))
                     }
 
-                    // Dialogs
                     if (showAddDialog) {
                         AlertDialog(
                             onDismissRequest = { showAddDialog = false },
                             title = { Text("Add Custom Dhikr") },
                             text = {
-                                Column {
-                                    Text(
-                                        text = "Enter a custom name for your dhikr:",
-                                        fontSize = 14.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(bottom = 8.dp)
-                                    )
-                                    OutlinedTextField(
-                                        value = newDhikrName,
-                                        onValueChange = { newDhikrName = it },
-                                        placeholder = { Text("e.g. Astaghfirullah") },
-                                        singleLine = true,
-                                        colors = OutlinedTextFieldDefaults.colors(
-                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                            focusedLabelColor = MaterialTheme.colorScheme.primary
-                                        )
-                                    )
-                                }
+                                OutlinedTextField(
+                                    value = newDhikrName,
+                                    onValueChange = { newDhikrName = it },
+                                    placeholder = { Text("e.g. Astaghfirullah") },
+                                    singleLine = true,
+                                    shape = MaterialTheme.shapes.medium
+                                )
                             },
                             confirmButton = {
                                 Button(
@@ -456,16 +382,11 @@ fun TasbeehScreen(
                                             viewModel.addCustomDhikr(newDhikrName)
                                             showAddDialog = false
                                         }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                                ) {
-                                    Text("Add", color = MaterialTheme.colorScheme.onPrimary)
-                                }
+                                    }
+                                ) { Text("Add") }
                             },
                             dismissButton = {
-                                TextButton(onClick = { showAddDialog = false }) {
-                                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
+                                TextButton(onClick = { showAddDialog = false }) { Text("Cancel") }
                             }
                         )
                     }
@@ -473,26 +394,15 @@ fun TasbeehScreen(
                     if (showCustomTargetDialog) {
                         AlertDialog(
                             onDismissRequest = { showCustomTargetDialog = false },
-                            title = { Text("Set Custom Target") },
+                            title = { Text("Set Target") },
                             text = {
-                                Column {
-                                    Text(
-                                        text = "Enter target goal value:",
-                                        fontSize = 14.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.padding(bottom = 8.dp)
-                                    )
-                                    OutlinedTextField(
-                                        value = customTargetInput,
-                                        onValueChange = { customTargetInput = it },
-                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                        singleLine = true,
-                                        colors = OutlinedTextFieldDefaults.colors(
-                                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                            focusedLabelColor = MaterialTheme.colorScheme.primary
-                                        )
-                                    )
-                                }
+                                OutlinedTextField(
+                                    value = customTargetInput,
+                                    onValueChange = { customTargetInput = it },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    singleLine = true,
+                                    shape = MaterialTheme.shapes.medium
+                                )
                             },
                             confirmButton = {
                                 Button(
@@ -502,16 +412,11 @@ fun TasbeehScreen(
                                             viewModel.updateTarget(selectedItem.id, target)
                                             showCustomTargetDialog = false
                                         }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                                ) {
-                                    Text("Set", color = MaterialTheme.colorScheme.onPrimary)
-                                }
+                                    }
+                                ) { Text("Set") }
                             },
                             dismissButton = {
-                                TextButton(onClick = { showCustomTargetDialog = false }) {
-                                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
+                                TextButton(onClick = { showCustomTargetDialog = false }) { Text("Cancel") }
                             }
                         )
                     }
@@ -520,9 +425,7 @@ fun TasbeehScreen(
                         AlertDialog(
                             onDismissRequest = { showResetConfirmDialog = false },
                             title = { Text("Reset Count") },
-                            text = {
-                                Text("Do you want to reset \"${selectedItem.displayName}\" count back to 0?")
-                            },
+                            text = { Text("Reset \"${selectedItem.displayName}\" count to 0?") },
                             confirmButton = {
                                 Button(
                                     onClick = {
@@ -530,14 +433,10 @@ fun TasbeehScreen(
                                         showResetConfirmDialog = false
                                     },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                                ) {
-                                    Text("Reset", color = MaterialTheme.colorScheme.onError)
-                                }
+                                ) { Text("Reset") }
                             },
                             dismissButton = {
-                                TextButton(onClick = { showResetConfirmDialog = false }) {
-                                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
+                                TextButton(onClick = { showResetConfirmDialog = false }) { Text("Cancel") }
                             }
                         )
                     }
@@ -546,9 +445,7 @@ fun TasbeehScreen(
                         AlertDialog(
                             onDismissRequest = { showDeleteConfirmDialog = null },
                             title = { Text("Delete Dhikr") },
-                            text = {
-                                Text("Do you want to delete \"${item.displayName}\" and its stored counts?")
-                            },
+                            text = { Text("Delete \"${item.displayName}\"?") },
                             confirmButton = {
                                 Button(
                                     onClick = {
@@ -556,18 +453,15 @@ fun TasbeehScreen(
                                         showDeleteConfirmDialog = null
                                     },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                                ) {
-                                    Text("Delete", color = MaterialTheme.colorScheme.onError)
-                                }
+                                ) { Text("Delete") }
                             },
                             dismissButton = {
-                                TextButton(onClick = { showDeleteConfirmDialog = null }) {
-                                    Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
+                                TextButton(onClick = { showDeleteConfirmDialog = null }) { Text("Cancel") }
                             }
                         )
                     }
                 }
+                else -> {}
             }
         }
     }

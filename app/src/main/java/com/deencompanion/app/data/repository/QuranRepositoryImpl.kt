@@ -12,6 +12,7 @@ import com.deencompanion.app.domain.model.WordVerse
 import com.deencompanion.app.domain.repository.QuranRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,6 +24,10 @@ class QuranRepositoryImpl @Inject constructor(
     private val quranCacheDao: QuranCacheDao,
     private val gson: Gson
 ) : QuranRepository {
+
+    override fun getDownloadedSurahNumbers(): Flow<List<Int>> {
+        return quranCacheDao.getDownloadedSurahNumbers()
+    }
 
     override suspend fun getSurahEditions(surahNumber: Int): Result<List<AyahDetail>> {
         val cacheType = "editions"
@@ -62,15 +67,28 @@ class QuranRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSurahAudio(surahNumber: Int): Result<List<AudioAyahItem>> {
+        val cacheType = "audio"
         return try {
             val response = quranApi.getSurahAudio(surahNumber)
             if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!.data.ayahs)
+                val audioAyahs = response.body()!!.data.ayahs
+                cacheData(surahNumber, cacheType, audioAyahs)
+                Result.success(audioAyahs)
             } else {
-                Result.failure(Exception("Audio unavailable offline"))
+                loadAudioFromCache(surahNumber, cacheType)
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Audio unavailable offline"))
+            loadAudioFromCache(surahNumber, cacheType, e)
+        }
+    }
+
+    private suspend fun loadAudioFromCache(surahNumber: Int, dataType: String, error: Exception? = null): Result<List<AudioAyahItem>> {
+        val cached = quranCacheDao.getCachedData(surahNumber, dataType)
+        return if (cached != null) {
+            val type = object : TypeToken<List<AudioAyahItem>>() {}.type
+            Result.success(gson.fromJson(cached.jsonData, type))
+        } else {
+            Result.failure(error ?: IOException("Audio links unavailable offline for this Surah."))
         }
     }
 

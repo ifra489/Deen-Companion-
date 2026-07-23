@@ -8,4 +8,6 @@ interface PrayerTrackingRepository {
     fun getTodayPrayerStatus(date: String): Flow<List<PrayerRecord>>
     fun getPrayerHistory(startDate: String, endDate: String): Flow<List<PrayerRecord>>
     suspend fun getPrayedCountForDate(date: String): Int
+    suspend fun getCurrentStreak(): Int
+    suspend fun getWeeklyProgress(): List<com.deencompanion.app.domain.model.DailyProgress>
 }

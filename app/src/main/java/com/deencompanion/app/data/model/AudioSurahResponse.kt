@@ -29,5 +29,5 @@ data class AudioAyahItem(
     val page: Int,
     val ruku: Int,
     val hizbQuarter: Int,
-    val sajda: Boolean
+    val sajda: Any? // Can be Boolean or Object, using Any to avoid deserialization errors
 )

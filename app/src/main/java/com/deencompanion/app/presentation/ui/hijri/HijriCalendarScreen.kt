@@ -1,17 +1,13 @@
 package com.deencompanion.app.presentation.ui.hijri
 
-
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.ChevronLeft
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,10 +36,19 @@ fun HijriCalendarScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hijri Calendar", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold) },
+                title = { 
+                    Text(
+                        text = "Hijri Calendar", 
+                        style = MaterialTheme.typography.displayLarge
+                    ) 
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
+                        Icon(
+                            imageVector = Icons.Rounded.ArrowBack, 
+                            contentDescription = "Back", 
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
@@ -55,122 +60,125 @@ fun HijriCalendarScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
                 .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // Month navigation header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Card(
+                shape = MaterialTheme.shapes.large,
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
             ) {
-                IconButton(onClick = { viewModel.goToPreviousMonth() }) {
-                    Icon(Icons.Default.ChevronLeft, contentDescription = "Previous Month", tint = MaterialTheme.colorScheme.primary)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "${state.monthNameEn} ${state.hijriYear} AH",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(text = state.monthNameAr, fontSize = 13.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
-                }
-                IconButton(onClick = { viewModel.goToNextMonth() }) {
-                    Icon(Icons.Default.ChevronRight, contentDescription = "Next Month", tint = MaterialTheme.colorScheme.primary)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Weekday header row
-            Row(modifier = Modifier.fillMaxWidth()) {
-                dayLabels.forEach { label ->
-                    Text(
-                        text = label,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Calendar grid
-            Column(modifier = Modifier.fillMaxWidth()) {
-                state.days.chunked(7).forEach { weekDays ->
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        weekDays.forEach { day ->
-                            Box(modifier = Modifier.weight(1f)) {
-                                HijriDayCell(day = day, formatter = gregorianFormatter)
-                            }
-                        }
-                        if (weekDays.size < 7) {
-                            repeat(7 - weekDays.size) {
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Important Islamic Dates (${state.hijriYear} AH)",
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-
-            state.events.forEach { event ->
-                Card(
-                    shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                ) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
-                            Text(event.name, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.primary)
-                            Text(event.hijriDate, fontSize = 11.sp, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f))
+                        IconButton(onClick = { viewModel.goToPreviousMonth() }) {
+                            Icon(Icons.Rounded.ChevronLeft, contentDescription = "Previous Month", tint = MaterialTheme.colorScheme.primary)
                         }
-                        Text(
-                            text = event.gregorianDate.format(gregorianFormatter),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "${state.monthNameEn} ${state.hijriYear} AH",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = state.monthNameAr, 
+                                style = MaterialTheme.typography.bodySmall, 
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = { viewModel.goToNextMonth() }) {
+                            Icon(Icons.Rounded.ChevronRight, contentDescription = "Next Month", tint = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        dayLabels.forEach { label ->
+                            Text(
+                                text = label,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        state.days.chunked(7).forEach { weekDays ->
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                weekDays.forEach { day ->
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        HijriDayCell(day = day)
+                                    }
+                                }
+                                if (weekDays.size < 7) {
+                                    repeat(7 - weekDays.size) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = "Islamic Events (${state.hijriYear} AH)",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                
+                state.events.forEach { event ->
+                    Card(
+                        shape = MaterialTheme.shapes.large,
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(text = event.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                Text(text = event.hijriDate, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                            }
+                            Text(
+                                text = event.gregorianDate.format(gregorianFormatter),
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+
             Text(
-                text = "Note: Hijri dates are astronomically calculated and may differ by a day from local moon sighting announcements.",
-                fontSize = 10.sp,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                text = "Note: Hijri dates are astronomically calculated and may differ from local sightings.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
+            
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
 
 @Composable
-fun HijriDayCell(day: HijriCalendarDay?, formatter: DateTimeFormatter) {
+fun HijriDayCell(day: HijriCalendarDay?) {
     Box(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .padding(3.dp),
+        modifier = Modifier.aspectRatio(1f).padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
         if (day != null) {
@@ -178,22 +186,22 @@ fun HijriDayCell(day: HijriCalendarDay?, formatter: DateTimeFormatter) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        if (day.isToday) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-                        RoundedCornerShape(8.dp)
+                        if (day.isToday) MaterialTheme.colorScheme.primary else Color.Transparent,
+                        MaterialTheme.shapes.medium
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = "${day.hijriDay}",
+                    style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    color = if (day.isToday) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                    color = if (day.isToday) Color.White else MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = "${day.gregorianDate.dayOfMonth}",
-                    fontSize = 9.sp,
-                    color = if (day.isToday) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f) else MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
+                    color = if (day.isToday) Color.White.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

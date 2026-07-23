@@ -77,7 +77,7 @@ class QuranDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadWordByWordData() {
+    fun loadWordByWordData() {
         viewModelScope.launch {
             _uiState.update { it.copy(wordByWordState = UiState.Loading) }
             val lang = _uiState.value.selectedTranslation

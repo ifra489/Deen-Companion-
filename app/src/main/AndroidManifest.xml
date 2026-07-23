@@ -29,14 +29,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:largeHeap="true"
-        android:theme="@style/Theme.DeenCompanion.Splash"
+        android:theme="@style/Theme.DeenCompanion"
         tools:targetApi="35">
 
         <!-- Splash Activity to display branding first -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.DeenCompanion.NoSystemSplash">
+            android:theme="@style/Theme.DeenCompanion.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

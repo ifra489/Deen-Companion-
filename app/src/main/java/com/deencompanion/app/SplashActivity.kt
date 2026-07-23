@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.deencompanion.app.presentation.ui.auth.AuthViewModel
 import com.deencompanion.app.util.UiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,7 @@ class SplashActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

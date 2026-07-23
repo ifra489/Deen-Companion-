@@ -27,6 +27,8 @@ import com.deencompanion.app.data.local.entity.GoalEntity
 import com.deencompanion.app.data.local.dao.QazaNamazDao
 import com.deencompanion.app.data.local.entity.QazaPrayerEntity
 import com.deencompanion.app.data.local.entity.QazaSettingsEntity
+import com.deencompanion.app.data.local.dao.OfflineCacheDao
+import com.deencompanion.app.data.local.entity.OfflineCacheEntity
 
 @Database(
     entities = [
@@ -38,9 +40,10 @@ import com.deencompanion.app.data.local.entity.QazaSettingsEntity
         GoalEntity::class,
         QazaPrayerEntity::class,
         QazaSettingsEntity::class,
+        OfflineCacheEntity::class,
         com.deencompanion.app.data.local.entity.BookmarkEntity::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -51,6 +54,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun goalDao(): GoalDao
     abstract fun qazaNamazDao(): QazaNamazDao
     abstract fun bookmarkDao(): com.deencompanion.app.data.local.dao.BookmarkDao
+    abstract fun offlineCacheDao(): OfflineCacheDao
 
     companion object {
         @Volatile

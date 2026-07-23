@@ -1,21 +1,18 @@
 package com.deencompanion.app.presentation.ui.quran
 
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Bookmark
+import androidx.compose.material.icons.rounded.BookmarkBorder
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDirection
@@ -35,7 +31,6 @@ import com.deencompanion.app.domain.model.Surah
 import com.deencompanion.app.domain.model.WordVerse
 import com.deencompanion.app.presentation.ui.bookmarks.BookmarksViewModel
 import com.deencompanion.app.util.UiState
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -46,19 +41,13 @@ fun QuranDetailScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val bookmarksViewModel: BookmarksViewModel = hiltViewModel()
-
-    val appBackground = MaterialTheme.colorScheme.background
-    val appGreenAccent = MaterialTheme.colorScheme.primary
-    val appTextPrimary = MaterialTheme.colorScheme.onBackground
 
     val currentSurah = remember(surahId) {
         Surah.ALL_SURAHS.find { it.number == surahId }
     }
 
-    // Sync selected tab jumps with the list scrolling
     LaunchedEffect(uiState.selectedAyahIndex) {
         if (uiState.selectedAyahIndex >= 0) {
             listState.animateScrollToItem(uiState.selectedAyahIndex)
@@ -72,28 +61,26 @@ fun QuranDetailScreen(
                     Column {
                         Text(
                             text = currentSurah?.nameTransliteration ?: "Surah Details",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = currentSurah?.nameEnglish ?: "",
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
-                            fontSize = 12.sp
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.Rounded.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 },
                 actions = {
-                    // Segmented Button or Toggle Row to switch modes
                     SingleChoiceSegmentedButtonRow(
                         modifier = Modifier.padding(end = 12.dp)
                     ) {
@@ -102,44 +89,42 @@ fun QuranDetailScreen(
                             onClick = { viewModel.toggleMode(false) },
                             shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
                             colors = SegmentedButtonDefaults.colors(
-                                activeContainerColor = MaterialTheme.colorScheme.surface,
-                                activeContentColor = appGreenAccent,
-                                inactiveContainerColor = Color.Transparent,
-                                inactiveContentColor = MaterialTheme.colorScheme.onPrimary
+                                activeContainerColor = MaterialTheme.colorScheme.primary,
+                                activeContentColor = Color.White,
+                                inactiveContainerColor = MaterialTheme.colorScheme.surface,
+                                inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         ) {
-                            Text("Normal", fontSize = 11.sp)
+                            Text("Normal", style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp))
                         }
                         SegmentedButton(
                             selected = uiState.isWordByWordMode,
                             onClick = { viewModel.toggleMode(true) },
                             shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
                             colors = SegmentedButtonDefaults.colors(
-                                activeContainerColor = MaterialTheme.colorScheme.surface,
-                                activeContentColor = appGreenAccent,
-                                inactiveContainerColor = Color.Transparent,
-                                inactiveContentColor = MaterialTheme.colorScheme.onPrimary
+                                activeContainerColor = MaterialTheme.colorScheme.primary,
+                                activeContentColor = Color.White,
+                                inactiveContainerColor = MaterialTheme.colorScheme.surface,
+                                inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         ) {
-                            Text("W-B-W", fontSize = 11.sp)
+                            Text("W-B-W", style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp))
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = appGreenAccent)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
         bottomBar = {
-            // Persistent Audio Recitation Player Sheet
             if (uiState.audioAyahs.isNotEmpty()) {
                 AudioPlayerBar(
                     uiState = uiState,
-                    appGreenAccent = appGreenAccent,
                     onPlayPauseClick = { viewModel.toggleAudioPlayPause() },
                     onSeek = { viewModel.seekTo(it) }
                 )
             }
         },
-        containerColor = appBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         modifier = modifier
     ) { innerPadding ->
         Column(
@@ -147,14 +132,11 @@ fun QuranDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-
-            // 1. Horizontal Scrollable Pager tabs Row ("Ayat 1", "Ayat 2", ...)
             val totalAyahs = currentSurah?.versesCount ?: 0
             if (totalAyahs > 0) {
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
                         .padding(vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
@@ -165,21 +147,19 @@ fun QuranDetailScreen(
                             onClick = { viewModel.setSelectedAyahIndex(i) },
                             label = { Text("Ayat ${i + 1}") },
                             colors = AssistChipDefaults.assistChipColors(
-                                containerColor = if (isSelected) appGreenAccent else appBackground,
-                                labelColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else appTextPrimary
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                                labelColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
                             ),
-                            border = null
+                            border = null,
+                            shape = MaterialTheme.shapes.medium
                         )
                     }
                 }
             }
 
-            // 2. Language Translation Filter Chips (Only shown in Normal mode)
-            // 2. Language Translation Filter Chips (Normal aur Word-by-Word dono modes mein)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
                     .padding(horizontal = 16.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -189,40 +169,41 @@ fun QuranDetailScreen(
                     FilterChip(
                         selected = isSelected,
                         onClick = { viewModel.setTranslation(code) },
-                        label = { Text(label, fontSize = 12.sp) },
+                        label = { Text(label, style = MaterialTheme.typography.bodySmall) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = appGreenAccent,
-                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = Color.White
+                        ),
+                        shape = MaterialTheme.shapes.medium
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // 3. Central Ayah Readings List
             if (!uiState.isWordByWordMode) {
-                // NORMAL MODE SCREEN
                 when (val state = uiState.normalSurahState) {
                     is UiState.Loading -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = appGreenAccent)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     }
                     is UiState.Error -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-                        }
-                    }
-                    is UiState.Empty -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No ayahs loaded.")
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(onClick = { viewModel.loadSurahData() }) {
+                                    Text("Retry")
+                                }
+                            }
                         }
                     }
                     is UiState.Success -> {
                         LazyColumn(
                             state = listState,
-                            contentPadding = PaddingValues(bottom = 100.dp, top = 8.dp),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
                             itemsIndexed(state.data) { index, ayah ->
@@ -234,12 +215,9 @@ fun QuranDetailScreen(
                                 NormalAyahCard(
                                     ayah = ayah,
                                     surahId = surahId,
-                                    index = index,
                                     selectedTranslation = uiState.selectedTranslation,
                                     isHighlighted = isHighlighted,
                                     isAyahPlaying = isAyahPlaying,
-                                    appGreenAccent = appGreenAccent,
-                                    appTextPrimary = appTextPrimary,
                                     isBookmarked = isBookmarked,
                                     onBookmarkClick = {
                                         bookmarksViewModel.toggleAyah(
@@ -262,42 +240,43 @@ fun QuranDetailScreen(
                             }
                         }
                     }
+                    else -> {}
                 }
             } else {
-                // WORD-BY-WORD MODE SCREEN
                 when (val state = uiState.wordByWordState) {
                     is UiState.Loading -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = appGreenAccent)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     }
                     is UiState.Error -> {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-                        }
-                    }
-                    is UiState.Empty -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No WBW data found.")
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(state.message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(onClick = { viewModel.loadWordByWordData() }) {
+                                    Text("Retry")
+                                }
+                            }
                         }
                     }
                     is UiState.Success -> {
                         LazyColumn(
                             state = listState,
-                            contentPadding = PaddingValues(bottom = 100.dp, top = 8.dp),
+                            contentPadding = PaddingValues(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
                             itemsIndexed(state.data) { index, verse ->
                                 val isHighlighted = index == uiState.selectedAyahIndex
                                 WordByWordCard(
                                     verse = verse,
-                                    isHighlighted = isHighlighted,
-                                    appGreenAccent = appGreenAccent,
-                                    appTextPrimary = appTextPrimary
+                                    isHighlighted = isHighlighted
                                 )
                             }
                         }
                     }
+                    else -> {}
                 }
             }
         }
@@ -308,33 +287,27 @@ fun QuranDetailScreen(
 fun NormalAyahCard(
     ayah: AyahDetail,
     surahId: Int,
-    index: Int,
     selectedTranslation: String,
     isHighlighted: Boolean,
     isAyahPlaying: Boolean,
-    appGreenAccent: Color,
-    appTextPrimary: Color,
     isBookmarked: Boolean,
     onBookmarkClick: () -> Unit,
     onPlayClick: () -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = if (isHighlighted) appGreenAccent.copy(alpha = 0.04f) else MaterialTheme.colorScheme.surface
+            containerColor = if (isHighlighted) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        border = if (isHighlighted) BorderStroke(1.dp, appGreenAccent.copy(alpha = 0.3f)) else null,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+        border = if (isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(20.dp)
         ) {
-            // Header Row: Ayah Number Badge + Bookmark + Quick Play button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -343,65 +316,88 @@ fun NormalAyahCard(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(32.dp)
-                        .background(appGreenAccent.copy(alpha = 0.1f), shape = RoundedCornerShape(16.dp))
+                        .size(36.dp)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), shape = MaterialTheme.shapes.medium)
                 ) {
                     Text(
                         text = ayah.numberInSurah.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
-                        color = appGreenAccent,
-                        fontSize = 12.sp
+                        fontSize = 14.sp
                     )
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = onBookmarkClick) {
                         Icon(
-                            imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                            contentDescription = if (isBookmarked) "Remove bookmark" else "Bookmark this ayah",
-                            tint = appGreenAccent
+                            imageVector = if (isBookmarked) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                     IconButton(onClick = onPlayClick) {
                         Icon(
-                            imageVector = if (isAyahPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = if (isAyahPlaying) "Pause" else "Listen",
-                            tint = appGreenAccent
+                            imageVector = if (isAyahPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Arabic Text
-            val bismillah = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
-            val displayArabicText = if (ayah.numberInSurah == 1 && ayah.arabicText.startsWith(bismillah) && surahId != 1 && surahId != 9) {
-                ayah.arabicText.replaceFirst(bismillah, "$bismillah\n")
+            val bismillah1 = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+            val bismillah2 = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ"
+            val startsWithBismillah1 = ayah.arabicText.startsWith(bismillah1)
+            val startsWithBismillah2 = ayah.arabicText.startsWith(bismillah2)
+            val foundBismillah = if (startsWithBismillah1) bismillah1 else if (startsWithBismillah2) bismillah2 else null
+            val isSurahFatihaAyah1 = surahId == 1 && ayah.numberInSurah == 1
+            val shouldExtractBismillah = ayah.numberInSurah == 1 && foundBismillah != null && surahId != 1 && surahId != 9
+
+            if (isSurahFatihaAyah1 || shouldExtractBismillah) {
+                Text(
+                    text = foundBismillah ?: ayah.arabicText,
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center,
+                        textDirection = TextDirection.Rtl
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)
+                )
+            }
+
+            val remainingText = if (shouldExtractBismillah && foundBismillah != null) {
+                val text = ayah.arabicText.substringAfter(foundBismillah).trim()
+                if (text.isEmpty()) null else text
+            } else if (isSurahFatihaAyah1) {
+                null
             } else {
                 ayah.arabicText
             }
 
-            Text(
-                text = displayArabicText,
-                fontWeight = FontWeight.Bold,
-                color = appTextPrimary,
-                fontSize = 24.sp,
-                lineHeight = 38.sp,
-                textAlign = TextAlign.End,
-                style = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl),
-                modifier = Modifier.fillMaxWidth()
-            )
+            remainingText?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontSize = 24.sp,
+                        textAlign = if (shouldExtractBismillah) TextAlign.Center else TextAlign.End,
+                        textDirection = TextDirection.Rtl
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Dynamic Selected Translation
             val translationText = ayah.translations[selectedTranslation] ?: "Translation not available."
             Text(
                 text = translationText,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
                 textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -413,36 +409,30 @@ fun NormalAyahCard(
 @Composable
 fun WordByWordCard(
     verse: WordVerse,
-    isHighlighted: Boolean,
-    appGreenAccent: Color,
-    appTextPrimary: Color
+    isHighlighted: Boolean
 ) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = if (isHighlighted) appGreenAccent.copy(alpha = 0.04f) else MaterialTheme.colorScheme.surface
+            containerColor = if (isHighlighted) MaterialTheme.colorScheme.primary.copy(alpha = 0.05f) else MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        border = if (isHighlighted) BorderStroke(1.dp, appGreenAccent.copy(alpha = 0.3f)) else null,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+        border = if (isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(20.dp)
         ) {
-            // Ayah Reference Index
             Text(
-                text = "Ayah ${verse.verseNumber} (Key: ${verse.verseKey})",
+                text = "Ayah ${verse.verseNumber}",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
-                color = appGreenAccent,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // FlowRow wraps words beautifully from Right-To-Left direction
             CompositionLocalProvider(LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl) {
                 FlowRow(
                     modifier = Modifier.fillMaxWidth(),
@@ -454,24 +444,23 @@ fun WordByWordCard(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
-                                .clip(RoundedCornerShape(6.dp))
+                                .clip(MaterialTheme.shapes.medium)
                                 .background(MaterialTheme.colorScheme.background)
-                                .padding(8.dp)
+                                .padding(12.dp)
                         ) {
                             Text(
                                 text = word.arabicText,
-                                fontWeight = FontWeight.Bold,
-                                color = appTextPrimary,
-                                fontSize = 18.sp,
+                                style = MaterialTheme.typography.displayLarge.copy(fontSize = 20.sp),
+                                color = MaterialTheme.colorScheme.onSurface,
                                 textAlign = TextAlign.Center
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text = word.translation,
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 10.sp,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier.widthIn(max = 80.dp)
+                                modifier = Modifier.widthIn(max = 100.dp)
                             )
                         }
                     }
@@ -484,81 +473,67 @@ fun WordByWordCard(
 @Composable
 fun AudioPlayerBar(
     uiState: QuranDetailUiState,
-    appGreenAccent: Color,
     onPlayPauseClick: () -> Unit,
     onSeek: (Float) -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 8.dp
+        tonalElevation = 8.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(20.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Play / Pause Icon Button
                 IconButton(
                     onClick = onPlayPauseClick,
                     modifier = Modifier
-                        .size(48.dp)
-                        .background(appGreenAccent, shape = RoundedCornerShape(24.dp))
+                        .size(56.dp)
+                        .background(MaterialTheme.colorScheme.primary, shape = MaterialTheme.shapes.extraLarge)
                 ) {
                     Icon(
-                        imageVector = if (uiState.isAudioPlaying) {
-                            Icons.Default.Pause
-                        } else {
-                            Icons.Default.PlayArrow
-                        },
-                        contentDescription = "Play/Pause",
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        imageVector = if (uiState.isAudioPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                        contentDescription = null,
+                        tint = Color.White
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(20.dp))
 
-                // Playing Verse Title and Status Info
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = if (uiState.currentAudioAyahIndex != -1) {
-                            "Reciting Ayah ${uiState.currentAudioAyahIndex + 1}"
-                        } else {
-                            "Select an Ayah to Play"
-                        },
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
+                        text = if (uiState.currentAudioAyahIndex != -1) "Ayah ${uiState.currentAudioAyahIndex + 1}" else "Select Ayah",
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = "Sheikh Mishary Al-Alafasy",
-                        fontSize = 12.sp,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
-                // Time Indicator Label
                 Text(
                     text = "${formatTime(uiState.currentPositionMs)} / ${formatTime(uiState.currentDurationMs)}",
-                    fontSize = 12.sp,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Smooth Audio Progress Slider
             Slider(
                 value = uiState.audioProgress,
                 onValueChange = onSeek,
                 colors = SliderDefaults.colors(
-                    activeTrackColor = appGreenAccent,
-                    thumbColor = appGreenAccent,
-                    inactiveTrackColor = MaterialTheme.colorScheme.outline
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
+                    thumbColor = MaterialTheme.colorScheme.primary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.outlineVariant
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
